@@ -6,7 +6,7 @@ const root = 'assets';
 export const oldOrchardPier = {
   id: 'old-orchard-pier',
   name: 'Old Orchard Beach Pier — Ships, Seagulls, and a Singing Crate',
-  caption: 'A fake Reardon promotion trapped Daryl in one crate; the matching empty crate was left behind as a decoy.',
+  caption: 'Two crates entered. One singer left. The gull has retained counsel.',
   intro: 'Old Orchard Beach was supposed to be Uhall & Oates’ biggest promotion yet. Instead, the Reardons turned a fake “New Hit Record” delivery into a very real kidnapping, leaving John with an empty decoy crate and a boardwalk full of bad witnesses. Somewhere beyond the pier, Daryl is being shipped toward an encore he never agreed to perform.',
   opening: chapterOneDialogue.opening,
   reveal: {

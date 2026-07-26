@@ -5,7 +5,7 @@ const art = 'assets/art';
 export const theForksFinale = {
   id: 'the-forks-finale',
   name: 'You Make My Dreams Come True in The Forks',
-  caption: 'The Reardons’ archive sits between Moxie Falls and a very loud rescue plan.',
+  caption: 'Nothing says rescue mission like whitewater and predatory contract law.',
   intro: 'The chase returns to Maine, deep into The Forks, where the Kennebec roars past Moxie Falls and the Reardons have prepared their final broadcast. Daryl is close, the Recall Clause machine is nearly ready, and every mile of John’s impossible moving route has led here. With Jamo commanding the river and Joe Timmins claiming managerial credit from a safe distance, the rescue enters its final run.',
   opening: dialogue.opening,
   reveal: {

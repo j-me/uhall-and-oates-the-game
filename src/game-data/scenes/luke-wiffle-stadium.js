@@ -5,7 +5,7 @@ const art = 'assets/art';
 export const lukeWiffleStadium = {
   id: 'luke-wiffle-stadium',
   name: 'Kiss on My List — Jacuzzi Park',
-  caption: 'Luke Jacuzzi keeps every winning delivery lineup on a very sentimental list.',
+  caption: 'Every box score needs a box. Luke has opinions about both.',
   intro: 'The search moves to Jacuzzi Park, where Luke Jacuzzi announces routine deliveries with the urgency of a championship game. Somewhere inside the stadium is evidence of where the Reardons went next, but Luke believes every dispute should be settled through sportsmanship, spectacle, and unnecessary scoreboard statistics. John has moved pianos up staircases; surely he can survive one inning.',
   opening: dialogue.opening,
   reveal: {

@@ -5,7 +5,7 @@ const art = 'assets/art';
 export const tokyoCargoDistrict = {
   id: 'tokyo-cargo-district',
   name: 'Maneater on the Midnight Shipping',
-  caption: 'A karaoke stage-prop warehouse, a secured shipping lift, and one recording truck that takes itself too seriously.',
+  caption: 'The recording truck has better security than most record executives have morals.',
   intro: 'Tokyo’s shipping district never sleeps; it simply changes key after midnight. The Reardons have hidden their mobile recording operation among karaoke props, stage equipment, and workers too busy to question another exhausted mover. Huey Lewis is beginning to suspect his partnership came with some very bad news, while John is closer to Daryl than he has been since Maine.',
   opening: dialogue.opening,
   reveal: {

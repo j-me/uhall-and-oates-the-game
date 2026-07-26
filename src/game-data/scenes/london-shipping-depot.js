@@ -5,7 +5,7 @@ const art = 'assets/art';
 export const londonShippingDepot = {
   id: 'london-shipping-depot',
   name: 'I Can’t Go for That: London',
-  caption: 'The Reardons moved their contracts overseas. Oates moves the paperwork back.',
+  caption: 'Customs has nothing to declare except hostility toward useful paperwork.',
   intro: 'London rain has turned the Reardons’ trail into a maze of wet paperwork and suspiciously cheerful bureaucracy. Their overseas operation is hiding behind official-looking desks, contradictory rules, and enough stamped forms to bury a tour bus. Fortunately, Michael McDonald is nearby, bringing a magnificent voice, a portable keyboard, and a deeply personal interest in anything signed, sealed, or delivered.',
   opening: dialogue.opening,
   reveal: {

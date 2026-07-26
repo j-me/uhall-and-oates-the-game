@@ -5,7 +5,7 @@ const art = 'assets/art';
 export const manhattanLoadingZone = {
   id: 'manhattan-loading-zone',
   name: 'Private Eyes in the Big Apple',
-  caption: 'A storage maze, a fake investigator, and an invoice with trust issues.',
+  caption: 'Manhattan: where even the clues pay storage fees.',
   intro: 'Daryl’s trail reaches Manhattan, where every curb is occupied, every elevator is undersized, and every box claims to be fragile. Baltos—part investigator, part George Costanza impersonator, and entirely certain of himself—may have seen the Reardons’ shipment. Meanwhile, Joe Timmins keeps calling John to ask whether the rescue can be billed as overtime.',
   opening: dialogue.opening,
   reveal: {

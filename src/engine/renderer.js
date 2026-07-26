@@ -49,7 +49,7 @@ export function createRenderer(root, { onHotspot }) {
       Object.assign(image.style, Object.fromEntries(Object.entries(character.bounds).map(([key, value]) => [key, `${value}%`])));
       art.append(image);
     });
-    caption.textContent = scene.name;
+    caption.textContent = scene.caption || scene.name;
     layer.replaceChildren();
     buttons = scene.hotspots.filter((hotspot) =>
       (!hotspot.visibleWhen || hotspot.visibleWhen.every((flag) => state.flags[flag]))

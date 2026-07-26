@@ -6,7 +6,7 @@ const art = 'assets/art';
 export const gameComplete = {
   id: 'game-complete',
   name: 'Game Complete — Return to Sender',
-  caption: 'Daryl is free. The Reardons are not having a good exit interview.',
+  caption: 'Daryl is free. The Reardons are exploring involuntary career mobility.',
   intro: 'The river quiets. The contracts fail. And somewhere in Maine, a moving company finally gets to close one account.',
   opening: dialogue.opening,
   completion: dialogue.completion,
