@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 96">
+  <defs><style>.o{stroke:#24173d;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}</style></defs>
+  <g id="tape" transform="translate(0 0)"><circle class="o" cx="48" cy="48" r="35" fill="#f2d16b"/><circle class="o" cx="48" cy="48" r="13" fill="#44306f"/></g>
+  <g id="taffy" transform="translate(96 0)"><path class="o" fill="#ef8fb4" d="M19 61c1-37 53-43 57-10 3 25-19 34-35 21-11-9-6-27 8-26 10 1 11 17 1 20"/><path class="o" fill="none" d="M14 68c19 17 55 13 68-8"/></g>
+  <g id="crackers" transform="translate(192 0)"><path class="o" fill="#f6d681" d="M25 18h45v56H25z"/><path class="o" fill="none" d="M25 33h45M37 44h4m14 0h4M37 60h4m14 0h4"/></g>
+  <g id="stamp" transform="translate(288 0)"><path class="o" fill="#bd87dc" d="M24 21h48v45H24z"/><path class="o" fill="#f9edc9" d="M32 28h32v31H32z"/><circle class="o" cx="48" cy="43" r="8" fill="#73d7be"/></g>
+  <g id="pretzel" transform="translate(384 0)"><path class="o" fill="#b66a37" d="M25 70c-18-17-3-48 18-36l5 6 5-6c21-12 36 19 18 36-13 12-33 10-46 0z"/><circle class="o" cx="38" cy="50" r="7" fill="#f9edc9"/><circle class="o" cx="58" cy="50" r="7" fill="#f9edc9"/></g>
+</svg>

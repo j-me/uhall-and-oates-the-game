@@ -1,0 +1,10 @@
+# Optional local soundtrack. These files may be used by the game locally but
+# must never be committed or distributed with the repository.
+assets/audio/music-local/*
+!assets/audio/music-local/README.md
+
+.DS_Store
+**/.DS_Store
+
+# Personal browser/audio configuration. Import through Settings > Advanced.
+settings.local.json
