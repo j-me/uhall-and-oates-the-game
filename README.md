@@ -22,7 +22,9 @@ Create a clean deployable site in `build/`:
 npm run build
 ```
 
-The build bundles and tree-shakes the complete JavaScript module graph into one minified file, minifies CSS and HTML, rewrites production references, minifies the service worker and manifest, copies runtime media, adds `.nojekyll` for GitHub Pages, verifies every service-worker app-shell path, and prints code-size results plus the production target URL. It deliberately excludes source modules, `settings.local.json`, and `assets/audio/music-local/`.
+The build bundles and tree-shakes the complete JavaScript module graph into one minified file, minifies CSS and HTML, rewrites production references, minifies the service worker and manifest, and converts art PNGs to high-quality WebP when that produces a smaller file. Alpha quality is retained, installation icons remain PNG, and all HTML/CSS/JavaScript/service-worker image references are rewritten automatically. It also copies runtime media, adds `.nojekyll` for GitHub Pages, verifies every service-worker app-shell path, and prints code and image size results plus the production target URL.
+
+Image optimization uses `cwebp` when available and falls back to ImageMagick. The build deliberately excludes source modules, `settings.local.json`, and `assets/audio/music-local/`.
 
 ## Install on iPhone or iPad
 

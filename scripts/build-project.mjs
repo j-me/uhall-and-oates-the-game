@@ -10,6 +10,7 @@ import {
 } from 'node:fs';
 import { basename, join, relative, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const projectRoot = resolve('.');
 const outputDirectory = join(projectRoot, 'build');
@@ -49,6 +50,63 @@ cpSync(join(projectRoot, 'assets'), assetsDirectory, {
   },
 });
 
+function walkFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    return entry.isDirectory() ? walkFiles(path) : [path];
+  });
+}
+
+function encodeWebp(source, target) {
+  const cwebp = spawnSync('cwebp', [
+    '-quiet', '-mt', '-q', '92', '-alpha_q', '100', '-metadata', 'none',
+    source, '-o', target,
+  ], { stdio: 'ignore' });
+  if (cwebp.status === 0) return;
+
+  const imagemagick = spawnSync('magick', [
+    source, '-strip', '-quality', '92', target,
+  ], { stdio: 'ignore' });
+  if (imagemagick.status === 0) return;
+
+  throw new Error('Image optimization requires cwebp or ImageMagick on PATH.');
+}
+
+const imageReferences = new Map();
+const artPngFiles = walkFiles(join(assetsDirectory, 'art'))
+  .filter((path) => path.toLowerCase().endsWith('.png'));
+let imageBytesBefore = 0;
+let imageBytesAfter = 0;
+
+artPngFiles.forEach((source) => {
+  const originalBytes = statSync(source).size;
+  const target = source.replace(/\.png$/i, '.webp');
+  imageBytesBefore += originalBytes;
+  encodeWebp(source, target);
+  const optimizedBytes = statSync(target).size;
+  if (optimizedBytes >= originalBytes) {
+    rmSync(target);
+    imageBytesAfter += originalBytes;
+    return;
+  }
+  const originalReference = relative(outputDirectory, source).split(sep).join('/');
+  const optimizedReference = relative(outputDirectory, target).split(sep).join('/');
+  imageReferences.set(originalReference, optimizedReference);
+  imageBytesAfter += optimizedBytes;
+  rmSync(source);
+});
+
+function rewriteImageReferences(content) {
+  let rewritten = content;
+  imageReferences.forEach((optimized, original) => {
+    rewritten = rewritten.replaceAll(original, optimized);
+    const originalFromAssets = `./${original.slice('assets/'.length)}`;
+    const optimizedFromAssets = `./${optimized.slice('assets/'.length)}`;
+    rewritten = rewritten.replaceAll(originalFromAssets, optimizedFromAssets);
+  });
+  return rewritten;
+}
+
 esbuild.buildSync({
   entryPoints: [join(projectRoot, 'src', 'main.js')],
   outfile: join(assetsDirectory, 'app.min.js'),
@@ -60,6 +118,11 @@ esbuild.buildSync({
   legalComments: 'none',
   sourcemap: false,
 });
+const bundledJavaScriptPath = join(assetsDirectory, 'app.min.js');
+writeFileSync(
+  bundledJavaScriptPath,
+  rewriteImageReferences(readFileSync(bundledJavaScriptPath, 'utf8')),
+);
 
 const sourceCss = readFileSync(join(projectRoot, 'src', 'styles', 'main.css'), 'utf8')
   .replaceAll('../../assets/', './');
@@ -68,26 +131,29 @@ const minifiedCss = esbuild.transformSync(sourceCss, {
   minify: true,
   legalComments: 'none',
 });
-writeFileSync(join(assetsDirectory, 'app.min.css'), minifiedCss.code);
+writeFileSync(join(assetsDirectory, 'app.min.css'), rewriteImageReferences(minifiedCss.code));
 
 const sourceHtml = readFileSync(join(projectRoot, 'index.html'), 'utf8');
-const bundledHtml = sourceHtml
+const bundledHtml = rewriteImageReferences(sourceHtml
   .replace('href="src/styles/main.css"', 'href="assets/app.min.css"')
   .replace('<script type="module" src="src/main.js"></script>', '<script src="assets/app.min.js" defer></script>')
   .replace(/<!--(?!\[if)[\s\S]*?-->/g, '')
   .replace(/\s+/g, ' ')
   .replace(/>\s+</g, '><')
-  .trim();
+  .trim());
 writeFileSync(join(outputDirectory, 'index.html'), bundledHtml);
 
 const manifest = JSON.parse(readFileSync(join(projectRoot, 'manifest.webmanifest'), 'utf8'));
-writeFileSync(join(outputDirectory, 'manifest.webmanifest'), JSON.stringify(manifest));
+writeFileSync(
+  join(outputDirectory, 'manifest.webmanifest'),
+  rewriteImageReferences(JSON.stringify(manifest)),
+);
 
 const sourceServiceWorker = readFileSync(join(projectRoot, 'service-worker.js'), 'utf8');
-const bundledServiceWorker = sourceServiceWorker
+const bundledServiceWorker = rewriteImageReferences(sourceServiceWorker
   .replace("  './src/styles/main.css',\n", "  './assets/app.min.css',\n")
   .replace("  './src/main.js',\n", "  './assets/app.min.js',\n")
-  .replace(/  '\.\/src\/[^']+',\n/g, '');
+  .replace(/  '\.\/src\/[^']+',\n/g, ''));
 const appShellPaths = [...bundledServiceWorker.matchAll(/'\.\/(.*?)'/g)]
   .map((match) => match[1])
   .filter(Boolean);
@@ -149,4 +215,5 @@ console.log(`Build complete: ${relative(projectRoot, outputDirectory)}/ (${summa
 console.log(`Bundled code: ${(codeBefore / 1024).toFixed(1)} KB → ${(codeAfter / 1024).toFixed(1)} KB (${reduction}% smaller)`);
 console.log('JavaScript: 38 modules → assets/app.min.js');
 console.log('Styles: src/styles/main.css → assets/app.min.css');
+console.log(`Images: ${artPngFiles.length} PNGs → ${imageReferences.size} WebP files (${(imageBytesBefore / 1024 / 1024).toFixed(1)} MB → ${(imageBytesAfter / 1024 / 1024).toFixed(1)} MB)`);
 console.log(`Target URL: ${packageJson.homepage}`);
