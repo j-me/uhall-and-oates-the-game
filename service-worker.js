@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uhall-oates-v24';
+const CACHE_NAME = 'uhall-oates-v25';
 const APP_SHELL = [
   './',
   './index.html',
@@ -56,6 +56,7 @@ const APP_SHELL = [
   './assets/art/reveals/chapter-06-the-forks-v1.png',
   './assets/art/chapters/chapter-01/old-orchard-pier-v1.png',
   './assets/art/chapters/chapter-01/old-orchard-pier-gull-gone-v1.png',
+  './assets/art/chapters/chapter-02/1987-baseball-card-pack-v1.png',
   './assets/art/characters/john-oates-worried-v1.png',
   './assets/art/characters/john-oates-determined-v1.png',
   './assets/art/characters/john-oates-relieved-v1.png',

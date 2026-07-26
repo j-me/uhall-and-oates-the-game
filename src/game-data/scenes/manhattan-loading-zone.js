@@ -18,6 +18,16 @@ export const manhattanLoadingZone = {
     placeCharacter('john-oates', { pose: 'determined', alt: 'John Oates, determined', bounds: { left: 8, top: 43, width: 20, height: 52 } }),
     placeCharacter('baltos', { alt: 'Baltos, self-appointed investigator', bounds: { left: 61, top: 40, width: 14, height: 46 } }),
   ],
+  decorations: [
+    {
+      src: `${art}/chapters/chapter-02/1987-baseball-card-pack-v1.png`,
+      alt: 'A sealed 1987 baseball-card pack in the deli display',
+      className: 'scene-decoration--card-pack',
+      bounds: { left: 76, top: 37, width: 13, height: 25 },
+      visibleWhen: ['reardonUnitFound'],
+      hiddenWhen: ['card-displayTaken'],
+    },
+  ],
   hotspots: [
     { id: 'shipping-label', label: 'odd shipping label', bounds: { left: 7, top: 43, width: 9, height: 14 }, item: { id: 'shippingLabel', label: 'shipping label', icon: 'stamp' }, hiddenWhen: ['shipping-labelTaken'], responses: dialogue.shippingLabel },
     { id: 'card-display', label: 'sealed baseball-card display', priority: 2, bounds: { left: 77, top: 39, width: 12, height: 23 }, item: { id: 'toppsPack', label: '1987 Topps baseball-card pack', icon: 'cards' }, visibleWhen: ['reardonUnitFound'], hiddenWhen: ['card-displayTaken'], responses: dialogue.cardDisplay },
