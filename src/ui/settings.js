@@ -48,11 +48,22 @@ function loadSavedSettings() {
   }
 }
 
+function parseSettingsParameter(value) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=');
+    const bytes = Uint8Array.from(atob(padded), (character) => character.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+}
+
 function loadSettings() {
   const querySettings = new URLSearchParams(window.location.search).get('settings');
   if (querySettings === null) return loadSavedSettings();
   try {
-    const settings = normalizeSettings(JSON.parse(querySettings));
+    const settings = normalizeSettings(parseSettingsParameter(querySettings));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
     const cleanUrl = new URL(window.location.href);
     cleanUrl.searchParams.delete('settings');

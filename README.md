@@ -14,6 +14,16 @@ python3 -m http.server 8000
 
 Then visit `http://localhost:8000`. Click **Start the Rescue**, then use **LOOK**, **USE**, **TALK**, and **TAKE** with scene objects and inventory. Important clues are repeated in dialogue, object descriptions, and visible scene changes. Use **Settings** from the title screen or top bar to control sound, select the soundtrack source, and reveal the debug chapter selector.
 
+## Production build
+
+Create a clean deployable site in `build/`:
+
+```sh
+npm run build
+```
+
+The build bundles and tree-shakes the complete JavaScript module graph into one minified file, minifies CSS and HTML, rewrites production references, minifies the service worker and manifest, copies runtime media, adds `.nojekyll` for GitHub Pages, verifies every service-worker app-shell path, and prints code-size results plus the production target URL. It deliberately excludes source modules, `settings.local.json`, and `assets/audio/music-local/`.
+
 ## Install on iPhone or iPad
 
 Deploy the folder to an HTTPS website, open that address in Safari, tap **Share**, then choose **Add to Home Screen**. The installed game opens without Safari controls and uses the supplied truck icon and launch artwork. After the first complete load, the service worker keeps the app shell available offline and caches visited chapter art, music, and video as they are used. Installation and offline caching do not work when `index.html` is opened directly through a `file://` URL.
@@ -39,16 +49,36 @@ The Settings panel can also copy the complete configuration as JSON or apply a p
 
 ### Settings query URL
 
-Pass a complete configuration at startup with the `settings` query parameter. It is URL-encoded JSON, takes precedence over browser-saved settings, and is saved after it is validated. The game then removes the consumed parameter from the address bar so later Settings changes and refreshes use the saved configuration. For the ignored local configuration in `settings.local.json`, run:
+Pass a complete configuration at startup with the `settings` query parameter. It accepts URL-encoded JSON, standard Base64, or URL-safe Base64. The configuration takes precedence over browser-saved settings and is saved after it is validated. The game then removes the consumed parameter from the address bar so later Settings changes and refreshes use the saved configuration.
+
+For a URL-encoded JSON link using the ignored `settings.local.json`, run:
 
 ```sh
 npm run settings:url
 ```
 
-That prints an `index.html?settings=...` URL. Open it directly, or provide a hosted page address as the second argument:
+For a shorter, share-friendly Base64URL link targeting the production GitHub Pages site, run:
+
+```sh
+npm run settings:url:base64
+```
+
+That prints:
+
+```text
+https://j-me.github.io/uhall-and-oates-the-game/?settings=[base64settings]
+```
+
+The JSON command prints an `index.html?settings=...` URL for local use. You can also provide any hosted page address as the second argument:
 
 ```sh
 node scripts/create-settings-url.mjs settings.local.json https://example.com/uhall-and-oates/
+```
+
+Add `base64` as the final argument to generate a hosted Base64URL link:
+
+```sh
+node scripts/create-settings-url.mjs settings.local.json https://example.com/uhall-and-oates/ base64
 ```
 
 Malformed query JSON is ignored and the game falls back to the saved settings.

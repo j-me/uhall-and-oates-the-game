@@ -2,10 +2,16 @@
   "name": "uhall-and-oates-the-game",
   "private": true,
   "type": "module",
+  "homepage": "https://j-me.github.io/uhall-and-oates-the-game/",
+  "devDependencies": {
+    "esbuild": "0.14.47"
+  },
   "scripts": {
+    "build": "node scripts/build-project.mjs",
     "serve": "python3 -m http.server 8000",
     "check": "node scripts/check-project.mjs",
     "verify:campaign": "node scripts/verify-campaign.mjs",
-    "settings:url": "node scripts/create-settings-url.mjs settings.local.json"
+    "settings:url": "node scripts/create-settings-url.mjs settings.local.json",
+    "settings:url:base64": "node scripts/create-settings-url.mjs settings.local.json https://j-me.github.io/uhall-and-oates-the-game/ base64"
   }
 }
