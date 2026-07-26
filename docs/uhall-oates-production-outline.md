@@ -162,8 +162,6 @@ Daryl’s hidden counter-melody changes the broadcast from an agreement to a can
 
 **Setting:** The Forks, Maine: a Moxie Falls-adjacent outdoor finale, represented by the Reardon archive, river-valley broadcast tower, and Jamo’s rafting presence.
 
-**Note on location revision:** The earlier Brunswick/Portland conclusion was replaced by The Forks. The Forks, Moxie Falls, and Jamo provide the active final location.
-
 ### Implemented scene data
 
 | Hotspot | Interaction / state | Result |
@@ -239,4 +237,4 @@ The original broader multi-scene chapter plan remains valid as a content-expansi
 2. Add each required inventory item in a reachable, ordered state.
 3. Define percentage hotspot bounds and run the overlap/solvability verifier.
 4. Give consequential interactions a visible state update or short animation.
-5. Preserve the finale’s geography: Old Orchard Beach in the opening, followed by the international shipping trail, with The Forks/Moxie Falls and Jamo as the conclusion. Brunswick and Portland are no longer active campaign locations.
+5. Preserve the campaign geography: Old Orchard Beach opens the story, the international shipping trail broadens it, and The Forks, Moxie Falls, and Jamo anchor the Maine conclusion.
