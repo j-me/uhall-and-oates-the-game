@@ -192,13 +192,13 @@ export function createAudio() {
     activeChapter = chapterId;
     stopScore(); stopChapterTrack(); stopAmbience(); stopMusicSources();
     const sources = {
-      'chapter-01': { local: 'assets/audio/music-local/Out-Of-Touch.mp3', original: 'assets/audio/music/chapter-01-original.mp3' },
-      'chapter-02': { local: 'assets/audio/music-local/private-eyes.mp3', original: 'assets/audio/music/chapter-02-original.mp3' },
-      'chapter-03': { local: 'assets/audio/music-local/Kiss-On-My-List.mp3', original: 'assets/audio/music/chapter-03-original.mp3' },
-      'chapter-04': { local: 'assets/audio/music-local/I-Can\'t-Go-For-That.mp3', original: 'assets/audio/music/chapter-04-original.mp3' },
-      'chapter-05': { local: 'assets/audio/music-local/Man-Eater.mp3', original: 'assets/audio/music/chapter-05-original.mp3' },
-      'chapter-06': { local: 'assets/audio/music-local/You-Make-My-Dreams-Come-True.mp3', original: 'assets/audio/music/chapter-06-original.mp3' },
-      outro: { local: 'assets/audio/music-local/say-it-isnt-so.mp3', original: 'assets/audio/music/outro-original.mp3' },
+      'chapter-01': { local: 'assets/audio/music-local/chapter-01.mp3', original: 'assets/audio/music/chapter-01-original.mp3' },
+      'chapter-02': { local: 'assets/audio/music-local/chapter-02.mp3', original: 'assets/audio/music/chapter-02-original.mp3' },
+      'chapter-03': { local: 'assets/audio/music-local/chapter-03.mp3', original: 'assets/audio/music/chapter-03-original.mp3' },
+      'chapter-04': { local: 'assets/audio/music-local/chapter-04.mp3', original: 'assets/audio/music/chapter-04-original.mp3' },
+      'chapter-05': { local: 'assets/audio/music-local/chapter-05.mp3', original: 'assets/audio/music/chapter-05-original.mp3' },
+      'chapter-06': { local: 'assets/audio/music-local/chapter-06.mp3', original: 'assets/audio/music/chapter-06-original.mp3' },
+      outro: { local: 'assets/audio/music-local/outro.mp3', original: 'assets/audio/music/outro-original.mp3' },
     }[chapterId];
     if (sources) {
       const candidates = musicMode === 'original'

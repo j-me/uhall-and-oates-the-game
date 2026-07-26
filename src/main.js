@@ -63,7 +63,7 @@ settings = createSettings({
     gameRoot.classList.toggle('debug-mode', values.debugEnabled);
     const titleSource = values.musicMode === 'original'
       ? titleMusic.dataset.fallbackSrc
-      : values.externalUrls.title || 'assets/audio/music-local/one-on-one.mp3';
+      : values.externalUrls.title || 'assets/audio/music-local/title.mp3';
     if (titleMusic.getAttribute('src') !== titleSource) {
       titleFallbackAttempted = false;
       titleMusic.src = titleSource;

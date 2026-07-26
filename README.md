@@ -48,6 +48,12 @@ The in-game **Settings** menu controls the soundtrack:
 - **Original** always uses the original synth cues in `assets/audio/music/`.
 - **Debug Mode** reveals chapter selection and hotspot outlines. It does not change the selected soundtrack.
 
+Optional files in `assets/audio/music-local/` use neutral slot-based names:
+
+- `title.mp3`
+- `chapter-01.mp3` through `chapter-06.mp3`
+- `outro.mp3`
+
 Settings are saved in the browser for future sessions. URL fields are optional and can point to any browser-playable audio resource whose host permits cross-origin playback.
 The Settings panel can also copy the complete configuration as JSON or apply a pasted JSON block, making it easy to move every music URL and toggle to another browser at once.
 
