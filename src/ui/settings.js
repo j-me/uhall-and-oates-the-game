@@ -40,11 +40,26 @@ function normalizeSettings(input = {}) {
   };
 }
 
-function loadSettings() {
+function loadSavedSettings() {
   try {
     return normalizeSettings(JSON.parse(localStorage.getItem(STORAGE_KEY)) || {});
   } catch {
     return normalizeSettings();
+  }
+}
+
+function loadSettings() {
+  const querySettings = new URLSearchParams(window.location.search).get('settings');
+  if (querySettings === null) return loadSavedSettings();
+  try {
+    const settings = normalizeSettings(JSON.parse(querySettings));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete('settings');
+    window.history.replaceState(null, '', `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
+    return settings;
+  } catch {
+    return loadSavedSettings();
   }
 }
 

@@ -5,6 +5,7 @@ assets/audio/music-local/*
 
 .DS_Store
 **/.DS_Store
+*-workspace
 
 # Personal browser/audio configuration. Import through Settings > Advanced.
 settings.local.json

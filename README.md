@@ -37,6 +37,22 @@ The in-game **Settings** menu controls the soundtrack:
 Settings are saved in the browser for future sessions. URL fields are optional and can point to any browser-playable audio resource whose host permits cross-origin playback.
 The Settings panel can also copy the complete configuration as JSON or apply a pasted JSON block, making it easy to move every music URL and toggle to another browser at once.
 
+### Settings query URL
+
+Pass a complete configuration at startup with the `settings` query parameter. It is URL-encoded JSON, takes precedence over browser-saved settings, and is saved after it is validated. The game then removes the consumed parameter from the address bar so later Settings changes and refreshes use the saved configuration. For the ignored local configuration in `settings.local.json`, run:
+
+```sh
+npm run settings:url
+```
+
+That prints an `index.html?settings=...` URL. Open it directly, or provide a hosted page address as the second argument:
+
+```sh
+node scripts/create-settings-url.mjs settings.local.json https://example.com/uhall-and-oates/
+```
+
+Malformed query JSON is ignored and the game falls back to the saved settings.
+
 ## Campaign puzzle flow
 
 Each chapter has a small, ordered inventory chain. Items are consumed once their role is complete, except the **Private Eyes manifest**, which returns as the final evidence item.

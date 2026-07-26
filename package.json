@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "python3 -m http.server 8000",
     "check": "node scripts/check-project.mjs",
-    "verify:campaign": "node scripts/verify-campaign.mjs"
+    "verify:campaign": "node scripts/verify-campaign.mjs",
+    "settings:url": "node scripts/create-settings-url.mjs settings.local.json"
   }
 }

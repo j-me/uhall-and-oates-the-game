@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uhall-oates-v5';
+const CACHE_NAME = 'uhall-oates-v6';
 const APP_SHELL = [
   './',
   './index.html',
