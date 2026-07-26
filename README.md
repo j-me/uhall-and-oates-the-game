@@ -30,6 +30,8 @@ Image optimization uses `cwebp` when available and falls back to ImageMagick. Th
 
 Deploy the folder to an HTTPS website, open that address in Safari, tap **Share**, then choose **Add to Home Screen**. The installed game opens without Safari controls and uses the supplied truck icon and launch artwork. After the first complete load, the service worker keeps the app shell available offline and caches visited chapter art, music, and video as they are used. Installation and offline caching do not work when `index.html` is opened directly through a `file://` URL.
 
+The phone layout uses dynamic viewport units and display safe areas for current iPhone and Android devices. Portrait mode expands interactive puzzles to the usable screen height and temporarily hides the command deck; landscape mode places the scene and controls side by side. Touch controls use 44–52 px targets, inventory scrolls horizontally, settings becomes a full-screen sheet, and browser keyboard resizing is enabled for URL and JSON fields.
+
 ## Local and distributable music
 
 The repository ships with eight original synth cues in `assets/audio/music/`. Their note patterns are defined by this project and can be regenerated with:

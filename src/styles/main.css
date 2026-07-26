@@ -126,3 +126,273 @@ button:not(:disabled):not(.hotspot):hover { filter:brightness(1.12) saturate(1.0
 /* Keep the raster sheet authoritative over legacy one-off ball/card rules. */
 .inventory-icon--ball { border:0; border-radius:0; box-shadow:none; background-color:transparent; background-image:url('../../assets/art/ui/inventory-sprites-v1.png'); background-size:400% 300%; background-position:66.667% 50%; }
 .inventory-icon--cards { border:0; border-radius:0; box-shadow:none; background-color:transparent; background-image:url('../../assets/art/ui/inventory-sprites-v1.png'); background-size:400% 300%; background-position:33.333% 50%; transform:none; }
+
+/* Current-generation phone layout: safe areas, dynamic browser chrome, and touch-first puzzles. */
+html { min-height:100%; background:#09070f; color-scheme:dark; }
+body { min-height:100svh; min-height:100dvh; overflow-x:hidden; }
+input,textarea,select { font-size:16px; }
+
+@media (pointer:coarse) and (max-width:700px) {
+  body {
+    display:block;
+    min-height:100svh;
+    min-height:100dvh;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background-attachment:scroll;
+    overscroll-behavior-y:none;
+  }
+  #game {
+    width:100%;
+    min-height:calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    filter:saturate(1.06) contrast(1.03);
+  }
+  #game::before,#game::after { border-radius:0; }
+  .topbar {
+    min-height:52px;
+    gap:8px;
+    padding:6px max(9px,env(safe-area-inset-right)) 6px max(9px,env(safe-area-inset-left));
+    border-width:4px;
+    border-top:0;
+  }
+  .brand { min-width:0; gap:5px; font-size:clamp(.72rem,3vw,.9rem); letter-spacing:1px; }
+  .brand-mark { flex:0 0 auto; width:44px; height:27px; }
+  .settings-launch { min-width:76px; padding:7px 8px; font-size:.66rem; }
+  .scene { aspect-ratio:4/3; border-width:4px; }
+  .scene-caption {
+    left:8px;
+    bottom:7px;
+    max-width:68%;
+    overflow:hidden;
+    font-size:.66rem;
+    line-height:1.1;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .speech {
+    width:min(78%,330px);
+    min-width:0;
+    max-height:48%;
+    overflow:hidden;
+    padding:8px 10px;
+    border-width:2px;
+    border-radius:12px;
+    box-shadow:3px 3px 0 #24173dbb;
+    font-size:clamp(.72rem,3vw,.9rem);
+    line-height:1.2;
+  }
+  .command-deck {
+    padding:7px max(8px,env(safe-area-inset-right)) max(9px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));
+    border-width:4px;
+    border-top:0;
+  }
+  .message {
+    min-height:44px;
+    max-height:5.2em;
+    overflow:auto;
+    padding:5px 7px;
+    font-size:.8rem;
+    line-height:1.22;
+    overscroll-behavior:contain;
+  }
+  .controls-row { gap:7px; }
+  .verbs { grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; }
+  .verbs button { min-width:0; min-height:48px; padding:9px 3px; font-size:.76rem; }
+  .inventory-wrap {
+    width:100%;
+    min-height:58px;
+    gap:5px;
+    padding:4px 6px;
+  }
+  .inventory-label {
+    flex:0 0 auto;
+    max-width:58px;
+    font-size:.58rem;
+    line-height:1;
+    overflow-wrap:anywhere;
+  }
+  .inventory {
+    gap:7px;
+    overflow-x:auto;
+    padding:2px 4px 5px;
+    scroll-snap-type:x proximity;
+    overscroll-behavior-x:contain;
+  }
+  .item { flex:0 0 48px; width:48px; min-width:48px; min-height:48px; scroll-snap-align:start; }
+  .inventory-icon { width:34px; height:34px; }
+
+  .title-screen {
+    min-height:100%;
+    align-content:center;
+    gap:9px;
+    padding:68px 16px max(20px,env(safe-area-inset-bottom));
+  }
+  .title-truck,.title-truck img { max-height:34svh; max-height:34dvh; }
+  .title-screen #start-game { width:min(100%,290px); min-height:52px; padding:11px 14px; }
+  .settings-badge { top:max(12px,env(safe-area-inset-top)); right:max(12px,env(safe-area-inset-right)); }
+  .intro-crawl {
+    width:88%;
+    font-size:clamp(1rem,5vw,1.42rem);
+    line-height:1.32;
+  }
+  .scene-intro-crawl {
+    width:88%;
+    font-size:clamp(.98rem,4.6vw,1.35rem);
+    line-height:1.3;
+  }
+  .intro-actions,.scene-intro-actions { bottom:max(4%,env(safe-area-inset-bottom)); }
+  .intro-actions button,.scene-intro-actions button { min-height:48px; }
+  .crawl-reveal { width:min(82%,380px); }
+
+  .settings-panel {
+    position:fixed;
+    inset:0;
+    align-items:stretch;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .settings-card {
+    width:100%;
+    max-height:none;
+    min-height:100%;
+    padding:12px;
+    border-width:0;
+    box-shadow:none;
+    overscroll-behavior:contain;
+  }
+  .settings-card > header { position:sticky; z-index:2; top:-12px; padding:10px 0; background:#211536; }
+  .settings-view-tabs { position:sticky; z-index:2; top:54px; padding:5px 0; background:#211536; }
+  .settings-view-tabs button,.settings-done { min-height:48px; }
+  .setting-switch { min-height:62px; }
+  .music-source label { min-height:56px; }
+  .external-music-fields input { min-height:46px; font-size:16px; }
+  .settings-json textarea { min-height:42dvh; font-size:16px; }
+  .settings-json > div { flex-direction:column; }
+
+  #game.puzzle-open .command-deck { display:none; }
+  #game.puzzle-open .scene {
+    height:calc(100svh - 52px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    height:calc(100dvh - 52px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-height:520px;
+    aspect-ratio:auto;
+  }
+  :is(.crane-puzzle,.wiffle-puzzle,.voice-mixer-puzzle,.recall-puzzle,.storage-puzzle) {
+    inset:0;
+    max-height:100%;
+    gap:7px;
+    overflow:auto;
+    padding:9px;
+    border-width:3px;
+    box-shadow:none;
+    overscroll-behavior:contain;
+  }
+  :is(.crane-puzzle__header,.wiffle-puzzle__header,.voice-mixer__header,.recall-puzzle__header,.storage-puzzle__header) {
+    align-items:center;
+    gap:6px;
+  }
+  :is(.crane-puzzle__header,.wiffle-puzzle__header,.voice-mixer__header,.recall-puzzle__header,.storage-puzzle__header) strong {
+    font-size:.72rem;
+    line-height:1.05;
+    letter-spacing:.5px;
+  }
+  :is(.crane-puzzle__header,.wiffle-puzzle__header,.voice-mixer__header,.recall-puzzle__header,.storage-puzzle__header) span {
+    font-size:.58rem;
+    line-height:1.1;
+  }
+  .crane-puzzle { grid-template-rows:auto minmax(210px,1fr) auto auto auto; }
+  .crane-carriage { top:-23px; width:74px; height:116px; }
+  .crane-controls { display:grid; grid-template-columns:1fr 1.35fr 1fr; gap:5px; }
+  .crane-controls button { min-width:0; padding-inline:3px; font-size:.61rem; }
+  .wiffle-puzzle { grid-template-rows:auto minmax(180px,1fr) auto auto auto; }
+  .wiffle-dials { gap:5px; }
+  .wiffle-dials button { min-width:0; padding:5px; }
+  .wiffle-dials small,.wiffle-dials span { font-size:.5rem; }
+  .wiffle-dials b { font-size:1.45rem; }
+  .wiffle-actions { display:grid; grid-template-columns:1.25fr 1fr; gap:6px; }
+  .voice-mixer-puzzle { grid-template-rows:auto minmax(250px,1fr) auto auto; }
+  .voice-console { grid-template-columns:minmax(0,1fr) 90px; padding:6px; }
+  .recall-puzzle { grid-template-rows:auto auto auto minmax(90px,1fr) auto auto; }
+  .recall-evidence,.recall-console { gap:4px; }
+  .recall-evidence article,.recall-console button { padding:4px; }
+  .recall-core { width:min(210px,58%); }
+  .storage-puzzle { grid-template-rows:auto auto minmax(260px,1fr) auto auto; }
+  .storage-units { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+  .storage-units button { min-height:112px; padding:6px; }
+  .chapter-complete {
+    inset:auto 4% 6% 4%;
+    max-height:78%;
+    overflow:auto;
+    padding:11px;
+    border-width:3px;
+  }
+  .video-overlay { padding:8px; border-width:3px; }
+}
+
+@media (pointer:coarse) and (orientation:landscape) and (max-height:520px) {
+  body {
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    overflow:hidden;
+  }
+  #game {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(250px,34vw);
+    grid-template-rows:46px minmax(0,1fr);
+    width:100%;
+    height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-height:0;
+    overflow:hidden;
+    border:0;
+    border-radius:0;
+  }
+  .topbar { grid-column:1/-1; min-height:46px; padding:4px 9px; border-width:3px; }
+  .brand-mark { width:40px; height:24px; }
+  .scene {
+    grid-column:1;
+    grid-row:2;
+    width:100%;
+    height:100%;
+    min-height:0;
+    aspect-ratio:auto;
+    border-width:3px;
+  }
+  .command-deck {
+    grid-column:2;
+    grid-row:2;
+    min-width:0;
+    overflow:auto;
+    padding:5px max(6px,env(safe-area-inset-right)) max(5px,env(safe-area-inset-bottom)) 6px;
+    border-width:3px;
+    overscroll-behavior:contain;
+  }
+  .message { min-height:56px; max-height:30%; padding:4px 6px; font-size:.68rem; }
+  .controls-row { flex-direction:column; gap:5px; }
+  .verbs { grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; }
+  .verbs button { min-height:42px; padding:5px 3px; font-size:.65rem; }
+  .inventory-wrap { min-height:48px; padding:3px 5px; }
+  .inventory-label { display:none; }
+  .item { flex-basis:42px; width:42px; min-width:42px; min-height:42px; }
+  .inventory-icon { width:30px; height:30px; }
+  .speech { width:min(52%,300px); font-size:.7rem; }
+  .title-screen,.intro-screen,.scene-intro,.settings-panel { grid-column:1/-1; grid-row:1/-1; }
+  .title-screen { grid-template-columns:minmax(0,1fr) 260px; align-items:center; gap:8px 18px; padding:48px 28px 12px; }
+  .title-truck { grid-row:1/5; width:100%; max-height:70dvh; }
+  .title-truck img { max-height:70dvh; }
+  .settings-badge { top:10px; right:max(12px,env(safe-area-inset-right)); }
+  .intro-crawl { font-size:clamp(.9rem,2.7vw,1.25rem); }
+  #game.puzzle-open { grid-template-columns:1fr; }
+  #game.puzzle-open .scene {
+    grid-column:1/-1;
+    grid-row:2;
+    height:100%;
+    min-height:0;
+  }
+  #game.puzzle-open .command-deck { display:none; }
+  :is(.crane-puzzle,.wiffle-puzzle,.voice-mixer-puzzle,.recall-puzzle,.storage-puzzle) {
+    inset:0;
+    overflow:auto;
+    padding:7px 10px;
+    border-width:3px;
+  }
+}
