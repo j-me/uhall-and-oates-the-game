@@ -130,7 +130,7 @@ export function createUI(root, callbacks) {
       speechRoot.classList.add('is-visible');
     },
     clearSpeech: () => { speechRoot.classList.remove('is-visible'); },
-    showCompletion: (text, onContinue, titleText) => {
+    showCompletion: (text, onContinue, titleText, onReturnHome) => {
       root.querySelector('.chapter-complete')?.remove();
       const panel = document.createElement('div');
       panel.className = 'chapter-complete';
@@ -144,6 +144,13 @@ export function createUI(root, callbacks) {
         button.type = 'button';
         button.textContent = 'CONTINUE ›';
         button.addEventListener('click', onContinue);
+        panel.append(button);
+      }
+      if (onReturnHome) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = 'RETURN TO HOME';
+        button.addEventListener('click', onReturnHome);
         panel.append(button);
       }
       sceneRoot.append(panel);

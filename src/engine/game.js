@@ -70,7 +70,7 @@ function randomQuip(quips, ...values) {
   return quips[Math.floor(Math.random() * quips.length)](...values);
 }
 
-export function createGame({ root, chapters }) {
+export function createGame({ root, chapters, onReturnHome }) {
   const state = createState();
   const audio = createAudio();
   const ui = createUI(root, { onVerb: selectVerb, onItem: selectItem });
@@ -80,6 +80,20 @@ export function createGame({ root, chapters }) {
 
   function resetFailures() {
     failedActions = 0;
+  }
+
+  function returnHome() {
+    Object.assign(state, createState());
+    chapter = undefined;
+    resetFailures();
+    audio.stopBackground();
+    ui.hideSceneIntro();
+    ui.clearCompletion();
+    ui.clearSpeech();
+    ui.setChapter('');
+    ui.message('Welcome, future nuisance.');
+    ui.render(state);
+    onReturnHome?.();
   }
 
   function registerFailure() {
@@ -121,7 +135,7 @@ export function createGame({ root, chapters }) {
       ui.message(scene.opening || scene.caption);
       if (scene.completion) {
         const next = scene.next ? () => start(scene.next.chapterId, scene.next.sceneId, { showIntro: !scene.next.skipIntro }) : undefined;
-        ui.showCompletion(scene.completion, next, scene.completionTitle);
+        ui.showCompletion(scene.completion, next, scene.completionTitle, next ? undefined : returnHome);
       }
     };
     if (showIntro) ui.showSceneIntro(chapter.title, scene, enterScene);
@@ -296,7 +310,12 @@ export function createGame({ root, chapters }) {
     const completeAction = () => {
       if (!action.complete) return;
       const next = action.next ? () => start(action.next.chapterId, action.next.sceneId, { showIntro: !action.next.skipIntro }) : undefined;
-      ui.showCompletion(action.complete, next, action.completionTitle || (action.outro ? 'RESCUE COMPLETE' : undefined));
+      ui.showCompletion(
+        action.complete,
+        next,
+        action.completionTitle || (action.outro ? 'RESCUE COMPLETE' : undefined),
+        next ? undefined : returnHome,
+      );
     };
     if (action.video) {
       audio.stopBackground();
@@ -313,6 +332,7 @@ export function createGame({ root, chapters }) {
     start,
     debugStart,
     loadScene,
+    returnHome,
     playIntroSound() { audio.intro(); },
     configureMusic(settings) { audio.configureMusic(settings); },
     setSoundEnabled(value) {

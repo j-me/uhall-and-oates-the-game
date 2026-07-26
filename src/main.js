@@ -3,13 +3,13 @@ import { chapters } from './game-data/registry.js';
 import { createSettings } from './ui/settings.js';
 
 const gameRoot = document.getElementById('game');
-const game = createGame({ root: gameRoot, chapters });
 const titleScreen = document.getElementById('title-screen');
 const introScreen = document.getElementById('intro-screen');
 const introNext = document.getElementById('intro-next');
 const titleMusic = document.getElementById('title-music');
 let titleFallbackAttempted = false;
 let settings;
+const game = createGame({ root: gameRoot, chapters, onReturnHome: showHomeScreen });
 titleMusic.volume = 0.34;
 
 function startTitleMusic() {
@@ -20,6 +20,13 @@ function startTitleMusic() {
 function stopTitleMusic() {
   titleMusic.pause();
   titleMusic.currentTime = 0;
+}
+
+function showHomeScreen() {
+  introScreen.classList.add('is-hidden');
+  titleScreen.classList.remove('is-hidden');
+  gameRoot.classList.toggle('debug-mode', settings.values.debugEnabled);
+  startTitleMusic();
 }
 
 function beginChapter() {
