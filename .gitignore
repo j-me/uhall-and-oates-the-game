@@ -9,3 +9,6 @@ assets/audio/music-local/*
 
 # Personal browser/audio configuration. Import through Settings > Advanced.
 settings.local.json
+
+# Generated production site.
+build/
