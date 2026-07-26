@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "node scripts/build-project.mjs",
+    "generate:sfx": "node scripts/generate-sfx.mjs",
     "serve": "python3 -m http.server 8000",
     "check": "node scripts/check-project.mjs",
     "verify:campaign": "node scripts/verify-campaign.mjs",

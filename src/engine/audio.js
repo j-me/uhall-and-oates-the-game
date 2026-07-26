@@ -10,6 +10,28 @@ export function createAudio() {
   let musicMode = 'external';
   let externalTracks = {};
   const musicSources = new Set();
+  const activeSfx = new Set();
+  const sfxPaths = {
+    pickup: 'assets/audio/sfx/pickup.wav',
+    success: 'assets/audio/sfx/success-chime.wav',
+    crane: 'assets/audio/sfx/crane-motor.wav',
+    repair: 'assets/audio/sfx/repair-ratchet.wav',
+    fries: 'assets/audio/sfx/prize-drop.wav',
+    gull: 'assets/audio/sfx/gull-squawk.wav',
+    manifest: 'assets/audio/sfx/paper-rustle.wav',
+    stamp: 'assets/audio/sfx/stamp-thunk.wav',
+    cards: 'assets/audio/sfx/cards-rip.wav',
+    scoreboard: 'assets/audio/sfx/scoreboard-beeps.wav',
+    wiffle: 'assets/audio/sfx/wiffle-launch.wav',
+    customs: 'assets/audio/sfx/customs-clack.wav',
+    route: 'assets/audio/sfx/route-whoosh.wav',
+    lift: 'assets/audio/sfx/lift-unlock.wav',
+    capsules: 'assets/audio/sfx/capsule-rotate.wav',
+    voice: 'assets/audio/sfx/voice-glitch.wav',
+    broadcast: 'assets/audio/sfx/broadcast-surge.wav',
+    contract: 'assets/audio/sfx/contract-shred.wav',
+    tape: 'assets/audio/sfx/tape-rip.wav',
+  };
 
   function getContext() {
     if (!context) context = new AudioContext();
@@ -85,6 +107,40 @@ export function createAudio() {
   function stopMusicSources() {
     musicSources.forEach((source) => { try { source.stop(); } catch { /* Already stopped. */ } });
     musicSources.clear();
+  }
+
+  function stopSfx() {
+    activeSfx.forEach((sound) => {
+      sound.pause();
+      sound.currentTime = 0;
+    });
+    activeSfx.clear();
+  }
+
+  function playSfx(name, fallback, volume = 0.52) {
+    if (!enabled) return;
+    const path = sfxPaths[name];
+    if (!path || typeof Audio === 'undefined') {
+      fallback();
+      return;
+    }
+    const sound = new Audio(path);
+    let settled = false;
+    const release = () => {
+      settled = true;
+      activeSfx.delete(sound);
+    };
+    const useFallback = () => {
+      if (settled || !enabled) return;
+      release();
+      fallback();
+    };
+    sound.preload = 'auto';
+    sound.volume = volume;
+    sound.addEventListener('ended', release, { once: true });
+    sound.addEventListener('error', useFallback, { once: true });
+    activeSfx.add(sound);
+    sound.play().catch(useFallback);
   }
 
   function stopChapterTrack() {
@@ -166,7 +222,7 @@ export function createAudio() {
     window.clearInterval(ambienceTimer); ambienceTimer = undefined;
   }
 
-  function playHotspotEffect(effect) {
+  function playSynthHotspotEffect(effect) {
     const sounds = {
       repair: () => { tone(165, 0.08, 'square', 0.03); tone(220, 0.07, 'square', 0.026, 0.09); tone(330, 0.1, 'triangle', 0.024, 0.18); },
       fries: () => { tone(420, 0.045, 'square', 0.025); tone(620, 0.06, 'triangle', 0.024, 0.08); hiss(0.08, 0.008, 0.12); },
@@ -189,14 +245,14 @@ export function createAudio() {
   }
 
   return {
-    click: () => tone(510, 0.05, 'square', 0.025),
-    pickup: () => { tone(660, 0.08, 'triangle', 0.04); tone(880, 0.1, 'triangle', 0.035, 0.07); },
-    success: () => { tone(523, 0.1, 'triangle', 0.04); tone(659, 0.1, 'triangle', 0.04, 0.11); tone(784, 0.18, 'triangle', 0.045, 0.22); },
-    error: () => tone(130, 0.14, 'sawtooth', 0.025),
-    crane: () => { tone(180, 0.16, 'square', 0.035); tone(240, 0.12, 'square', 0.028, 0.12); tone(320, 0.08, 'triangle', 0.022, 0.23); },
-    gull: () => { tone(1040, 0.09, 'sine', 0.015); tone(1320, 0.12, 'sine', 0.012, 0.1); hiss(0.09, 0.01); },
-    effect: (effect) => playHotspotEffect(effect),
-    intro: () => { tone(220, 0.3, 'sawtooth', 0.035); tone(329.63, 0.3, 'triangle', 0.028, 0.09); },
+    click: () => {},
+    pickup: () => playSfx('pickup', () => { tone(660, 0.08, 'triangle', 0.04); tone(880, 0.1, 'triangle', 0.035, 0.07); }),
+    success: () => playSfx('success', () => { tone(523, 0.1, 'triangle', 0.04); tone(659, 0.1, 'triangle', 0.04, 0.11); tone(784, 0.18, 'triangle', 0.045, 0.22); }),
+    error: () => {},
+    crane: () => playSfx('crane', () => { tone(180, 0.16, 'square', 0.035); tone(240, 0.12, 'square', 0.028, 0.12); tone(320, 0.08, 'triangle', 0.022, 0.23); }),
+    gull: () => playSfx('gull', () => { tone(1040, 0.09, 'sine', 0.015); tone(1320, 0.12, 'sine', 0.012, 0.1); hiss(0.09, 0.01); }),
+    effect: (effect) => playSfx(effect, () => playSynthHotspotEffect(effect)),
+    intro: () => {},
     startChapter(chapterId) { startChapterMusic(chapterId); },
     configureMusic({ mode = 'external', urls = {} } = {}) {
       musicMode = mode === 'original' ? 'original' : 'external';
@@ -210,7 +266,7 @@ export function createAudio() {
     stopBackground() { activeChapter = undefined; stopScore(); stopChapterTrack(); stopAmbience(); stopMusicSources(); },
     setEnabled(value) {
       enabled = value;
-      if (!enabled) { activeChapter = undefined; stopScore(); stopChapterTrack(); stopAmbience(); stopMusicSources(); }
+      if (!enabled) { activeChapter = undefined; stopScore(); stopChapterTrack(); stopAmbience(); stopMusicSources(); stopSfx(); }
       return enabled;
     },
     get enabled() { return enabled; },

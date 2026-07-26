@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uhall-oates-v14';
+const CACHE_NAME = 'uhall-oates-v17';
 const APP_SHELL = [
   './',
   './index.html',
@@ -57,6 +57,25 @@ const APP_SHELL = [
   './assets/audio/music/chapter-05-original.mp3',
   './assets/audio/music/chapter-06-original.mp3',
   './assets/audio/music/outro-original.mp3',
+  './assets/audio/sfx/pickup.wav',
+  './assets/audio/sfx/success-chime.wav',
+  './assets/audio/sfx/crane-motor.wav',
+  './assets/audio/sfx/repair-ratchet.wav',
+  './assets/audio/sfx/prize-drop.wav',
+  './assets/audio/sfx/gull-squawk.wav',
+  './assets/audio/sfx/paper-rustle.wav',
+  './assets/audio/sfx/stamp-thunk.wav',
+  './assets/audio/sfx/cards-rip.wav',
+  './assets/audio/sfx/scoreboard-beeps.wav',
+  './assets/audio/sfx/wiffle-launch.wav',
+  './assets/audio/sfx/customs-clack.wav',
+  './assets/audio/sfx/route-whoosh.wav',
+  './assets/audio/sfx/lift-unlock.wav',
+  './assets/audio/sfx/capsule-rotate.wav',
+  './assets/audio/sfx/voice-glitch.wav',
+  './assets/audio/sfx/broadcast-surge.wav',
+  './assets/audio/sfx/contract-shred.wav',
+  './assets/audio/sfx/tape-rip.wav',
 ];
 
 self.addEventListener('install', (event) => {
