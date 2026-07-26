@@ -2,7 +2,7 @@
 
 ## Current implementation
 
-This document reflects the playable browser campaign currently in the scaffold: six sequential chapters plus a two-scene epilogue, original pixel-art backgrounds and character sprites, inventory puzzles, scene-intro crawls, chat-bubble dialogue, CRT presentation, MP3/procedural audio, and short outcome animations.
+This document reflects the playable browser campaign currently in the project: six sequential chapters plus a two-scene epilogue, original illustrated backgrounds and character sprites, inventory puzzles, perspective scene-intro crawls, chat-bubble dialogue, CRT presentation, configurable repository-safe audio, and short outcome animations.
 
 **Format:** PG-13 satirical point-and-click adventure.  
 **Writing rule:** named people are fictional comic characters in a fan-fiction setting. Use title allusions and original jokes; do not quote song lyrics.  
@@ -26,8 +26,13 @@ Daryl’s hidden counter-melody changes the broadcast from an agreement to a can
 - **LOOK** plus an inventory item displays a contextual inventory description in the message bar, then clears the verb selection.
 - Choosing **USE** and then an inventory item clears the verb-button highlight while keeping the item selected for use on a hotspot.
 - Hotspots use percentage bounds and are statically checked to ensure active zones do not overlap.
-- Scene transitions use an original retro perspective crawl. After the text fully clears, `hall-oates-crawl-reveal-v1.png` fades in with the live slogan **“You Can Go For That!”** The game sits inside a CRT-style bezel with scanlines and vignette.
+- Scene transitions use a three-dimensional perspective crawl over a chapter-specific illustration. A dark translucent scrim keeps the moving text readable, then fades early enough to reveal the brighter full-color art as the crawl finishes. The opening retains **“You Can Go For That!”** while later chapters use scene-specific taglines. The entire game sits inside a CRT-style bezel with scanlines and vignette.
+- Each crawl provides a short spoiler-free recap of the pursuit, the new location, the featured characters, and the immediate stakes. It must not name the required item, interaction order, puzzle settings, or solution.
 - Successes trigger a small, non-blocking visual animation. The scene state updates immediately, so animations never prevent interaction.
+- John reacts to successful actions with contextual expression sprites. His frustrated reaction appears only after every third failed action rather than interrupting every unsuccessful click. Named NPCs also have expression variants used for dialogue and puzzle outcomes.
+- On pointer-based devices, selecting inventory attaches its illustrated icon to the cursor; selecting an item clears the verb-button highlight. Touch devices retain large controls, safe-area spacing, and inventory labels without depending on hover.
+- **Settings** replaces the old sound-only control. It provides Sound, Original/External music selection, and Debug Mode. Its Advanced view copies or applies the full configuration as JSON; the same configuration can be supplied at startup through the `settings` query parameter as JSON or base64.
+- Debug Mode reveals non-overlapping hotspot outlines and direct chapter selection, including the epilogue with its required empty tape roll.
 
 ## Character bible
 
@@ -47,7 +52,7 @@ Daryl’s hidden counter-melody changes the broadcast from an agreement to a can
 
 | Chapter | Implemented scene | Required chain | Exit lead |
 | --- | --- | --- | --- |
-| 1. **Out of Touch in O.O.B ** | Old Orchard Beach Pier | taffy → crane → fries → gull → manifest | New York: “Private Eyes Only” |
+| 1. **Out of Touch in O.O.B.** | Old Orchard Beach Pier | taffy → crane → fries → gull → manifest | New York: “Private Eyes Only” |
 | 2. **Private Eyes in the Big Apple** | Manhattan loading zone | stamp → storage directory → card pack → Baltos | Luke Jacuzzi’s stadium |
 | 3. **Kiss on My List** | Luke’s wiffle-ball stadium | invoice → scoreboard → wiffle ball → home-plate launcher | London shipping label |
 | 4. **I Can’t Go for That: London** | London shipping depot | rejected form → Michael’s keyboard → authorization → routing stamp → release route copy → London shipping label → route map | Tokyo access pass |
@@ -74,7 +79,7 @@ Daryl’s hidden counter-melody changes the broadcast from an agreement to a can
 
 **Clue language:** The manifest reads “PRIVATE EYES ONLY,” pointing to the Manhattan consignment. The crane’s prize chute visibly holds the fries, while the gull’s food fixation is stated in its look/talk text.
 
-**Implemented animation/audio:** crane sound and fries pop; gull flight and gull-free background state. Chapter 1 prefers the ignored local override `music-local/Out-Of-Touch.mp3`; public builds automatically use the original repository cue `music/chapter-01-original.mp3`.
+**Implemented animation/audio:** crane motion and mechanical sound, fries drop, gull flight, gull-free background state, pickup feedback, and a dedicated Chapter 1 soundtrack slot. Public builds always contain the repository-safe original cue; optional External-mode sources are user- or developer-supplied and are not part of the production package.
 
 ## Chapter 2 — Private Eyes in the Big Apple
 
@@ -93,7 +98,7 @@ Daryl’s hidden counter-melody changes the broadcast from an agreement to a can
 
 **Clue language:** The shipping label exposes the three-circle/right-arrow stamp, 760-pound weight, and `NOT FRAGILE, EMOTIONALLY` handling code. The directory repeats the 800-pound elevator limit, while Baltos identifies `FRAGILE` as the Reardons’ decoy marking. The card pack is only revealed after the correct unit is found; Baltos’s dialogue and the display description establish the trade without spelling out the action order.
 
-**Implemented animation/audio:** stamp slam and card-pack handoff. Chapter 2 prefers the ignored local override `music-local/private-eyes.mp3`; public builds use `music/chapter-02-original.mp3`. The audio controller stops the preceding chapter’s score so only one background track plays.
+**Implemented animation/audio:** storage-unit elimination feedback, `16-B` confirmation stamp, card-wrapper rip and handoff, and a dedicated Chapter 2 soundtrack slot. The audio controller stops the preceding chapter’s score so only one background track plays.
 
 ## Chapter 3 — Kiss on My List
 
@@ -173,7 +178,7 @@ Daryl’s hidden counter-melody changes the broadcast from an agreement to a can
 
 ## Epilogue — Return to Sender
 
-The rescue flows directly into a playable wrap-up at The Forks, with no intervening scene crawl. John, Daryl, Jesse Reardon, and Joe Reardon are all visible. Jesse and Joe use their established character designs as inspectable/talkable characters. The sequel hook remains in the Chapter 6 rescue resolution rather than appearing as an inaccessible epilogue interaction. A final direct cut then lands on Joe Timmins, in his light-blue suit and aviator sunglasses, pointing at the open trunk of a gold Nissan Maxima and ordering John to get in for “trunk service.” John puts the long-carried empty tape roll in the trunk instead; this opens an in-game player for `assets/video/uhallandoates.mp4`. Closing the player reveals the final game-complete panel.
+The rescue flows directly into a playable wrap-up at The Forks, with no intervening scene crawl. John, Daryl, Jesse Reardon, and Joe Reardon are all visible. Jesse and Joe use their established character designs as inspectable/talkable characters. The sequel hook remains in the Chapter 6 rescue resolution rather than appearing as an inaccessible epilogue interaction. A final direct cut then lands on Joe Timmins, in his light-blue suit and aviator sunglasses, pointing at the open trunk of a gold Nissan Maxima and ordering John to get in for “trunk service.” John puts the long-carried empty tape roll in the trunk instead; this opens the in-game ending video. Closing the player reveals the final game-complete panel and a **RETURN TO HOME** button. That action resets chapter state, flags, inventory, verbs, dialogue UI, and chapter audio before restoring the animated title screen and title music; saved Settings remain intact.
 
 ## Implemented inventory reference
 
@@ -198,23 +203,33 @@ Every item has a hover name and a LOOK description. Required inventory is intent
 | Daryl’s counter-melody | Tokyo recording truck | Time final broadcast tower |
 | The Forks return manifest | Tokyo recording truck | Disprove the Recall Clause’s permanent-transfer claim |
 
-## Audio, art, and interaction production notes
+## Audio, art, build, and interaction production notes
 
-- Character and scene art use original 2D pixel-art sprites and backgrounds with an exaggerated 1980s adventure-game look.
+- Character and scene art use original exaggerated 2D cartoon sprites and painted backgrounds with a 1980s adventure-game look.
 - The game includes a Uhall & Oates logo placed on a moving truck, character sprites for all named main characters, scene-specific art for all six chapters, a Reardon-focused epilogue, and a dedicated gold-Maxima final scene.
-- John has scene-specific worried, determined, and dryly amused sprite variants; NPCs have idle motion and backgrounds use a gentle breathing treatment.
-- Puzzle outcomes use distinct visual markers: fries, gull exit, `16-B` stamp, card pack, scoreboard flash, wiffle ball, customs stamp, route plane, capsule rotation, musical-note overload, broadcast waves, and contract scatter.
+- John has worried, determined, relieved, startled, and frustrated expression variants. Huey, Michael, Baltos, Daryl, Jamo, Luke, Jesse, Joe Reardon, and Joe Timmins have their own reaction poses. NPCs have idle motion and backgrounds use a gentle breathing treatment.
+- Puzzle outcomes use distinct visual markers: fries, gull exit, `16-B` stamp, card pack, scoreboard flash, animated wiffle ball, customs stamp, route flight, service-lift opening, musical-note overload, broadcast waves, and contract scatter.
 - Story-critical inventory uses the transparent hand-painted `assets/art/ui/inventory-sprites-v1.png` sheet so every item has a consistent, readable cartoon silhouette instead of mixed emoji and CSS placeholders.
-- Audio is controlled by a single on/off toggle. Chapter music is exclusive: only one background score may play at a time. Chapters 1–6 use their dedicated MP3 cues; the original procedural score remains a safe fallback if an audio file fails to load.
+- Successful pickups and puzzle actions use event-specific sound effects where available, with synthesized fallbacks. Removed interface sounds are not required for navigation, failed clicks remain quiet, and scenery audio never starts an additional background score.
+- Chapter music is exclusive: starting a title, chapter, or epilogue cue stops the previous background source. The Sound setting controls music, ambience, and effects together.
+- **Original mode** uses the repository-safe title, six chapter, and epilogue cues shipped with the project.
+- **External mode** checks the player’s configured URL for the matching logical slot, may use an ignored local override during private development, and falls back to the repository-safe original cue. Optional recordings and their filenames are intentionally omitted from this production outline because they are not distributable project assets.
+- If every file-based candidate fails, the audio engine can fall back to the original procedural synth score. Public builds exclude the entire local-override directory.
 
-| Chapter | MP3 cue |
+| Logical music slot | Story use |
 | --- | --- |
-| 1 | `Out-Of-Touch.mp3` |
-| 2 | `private-eyes.mp3` |
-| 3 | `Kiss-On-My-List.mp3` |
-| 4 | `I-Can't-Go-For-That.mp3` |
-| 5 | `Man-Eater.mp3` |
-| 6 | `You-Make-My-Dreams-Come-True.mp3` |
+| `title` | Home screen |
+| `chapter-01` | Old Orchard Beach |
+| `chapter-02` | Manhattan |
+| `chapter-03` | Jacuzzi Park |
+| `chapter-04` | London |
+| `chapter-05` | Tokyo |
+| `chapter-06` | The Forks |
+| `outro` | Rescue wrap-up and Maxima scene |
+
+- The production build bundles and minifies JavaScript and CSS, converts eligible art to smaller WebP files, copies app icons and the manifest, and excludes private settings and ignored local music.
+- The installable web app includes iPhone/iPad launch art, maskable icons, safe-area-aware touch layouts, and a service worker for the repository-safe application shell.
+- Open Graph and large Twitter-card metadata use the versioned 1200×630 truck-only social card. The truck’s existing painted logo is preserved rather than re-typeset, preventing blurry duplicate promotional text.
 
 ## Future expansion constraints
 
@@ -224,4 +239,4 @@ The original broader multi-scene chapter plan remains valid as a content-expansi
 2. Add each required inventory item in a reachable, ordered state.
 3. Define percentage hotspot bounds and run the overlap/solvability verifier.
 4. Give consequential interactions a visible state update or short animation.
-5. Preserve the finale’s geography: Old Orchard Beach in the opening; Portland as a Maine connection; The Forks/Moxie Falls and Jamo as the conclusion.
+5. Preserve the finale’s geography: Old Orchard Beach in the opening, followed by the international shipping trail, with The Forks/Moxie Falls and Jamo as the conclusion. Brunswick and Portland are no longer active campaign locations.
