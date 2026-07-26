@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uhall-oates-v23';
+const CACHE_NAME = 'uhall-oates-v24';
 const APP_SHELL = [
   './',
   './index.html',
@@ -44,7 +44,7 @@ const APP_SHELL = [
   './assets/app-icons/app-icon-192.png',
   './assets/app-icons/app-icon-512.png',
   './assets/app-icons/app-icon-maskable-1024.png',
-  './assets/social/uhall-oates-social-card.png',
+  './assets/social/uhall-oates-social-card-v2.png',
   './assets/art/ui/uhall-oates-truck-logo-v2.png',
   './assets/art/ui/character-headshot-tile-v1.png',
   './assets/art/ui/inventory-sprites-v1.png',
