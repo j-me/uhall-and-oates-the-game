@@ -76,11 +76,24 @@ export function createGame({ root, chapters }) {
   const ui = createUI(root, { onVerb: selectVerb, onItem: selectItem });
   const renderer = createRenderer(root, { onHotspot: interact });
   let chapter;
+  let failedActions = 0;
+
+  function resetFailures() {
+    failedActions = 0;
+  }
+
+  function registerFailure() {
+    failedActions += 1;
+    if (failedActions < 3) return;
+    failedActions = 0;
+    renderer.reactJohn('frustrated');
+  }
 
   function start(chapterId, sceneId, { showIntro = true } = {}) {
     chapter = chapters[chapterId];
     if (!chapter) throw new Error(`Unknown chapter: ${chapterId}`);
     state.chapterId = chapterId;
+    resetFailures();
     ui.setChapter(chapter.title);
     audio.startChapter(chapterId);
     loadScene(sceneId || chapter.startScene, { showIntro });
@@ -157,53 +170,63 @@ export function createGame({ root, chapters }) {
 
     if (action) {
       if (action.requires?.some((flag) => !state.flags[flag])) {
-        respond(action.missing || 'That is not ready yet.', hotspot); audio.error(); return;
+        respond(action.missing || 'That is not ready yet.', hotspot); registerFailure(); audio.error(); return;
       }
       if (action.puzzle === 'crane') {
         ui.clearSpeech();
+        resetFailures();
+        renderer.reactJohn('determined');
         audio.crane();
         ui.showCranePuzzle({
           onMove: () => audio.click(),
-          onMiss: () => audio.error(),
+          onMiss: () => { registerFailure(); audio.error(); },
           onWin: () => execute(action, hotspot),
         });
         return;
       }
       if (action.puzzle === 'wiffle') {
         ui.clearSpeech();
+        resetFailures();
+        renderer.reactJohn('determined');
         ui.showWifflePuzzle({
           onAdjust: () => audio.click(),
           onLaunch: () => audio.effect('wiffle'),
-          onMiss: () => audio.error(),
+          onMiss: () => { registerFailure(); audio.error(); },
           onWin: () => execute(action, hotspot),
         });
         return;
       }
       if (action.puzzle === 'voiceMixer') {
         ui.clearSpeech();
+        resetFailures();
+        renderer.reactJohn('determined');
         ui.showVoiceMixerPuzzle({
           onAdjust: () => audio.click(),
           onTest: () => audio.effect('voice'),
-          onMiss: () => audio.error(),
+          onMiss: () => { registerFailure(); audio.error(); },
           onWin: () => execute(action, hotspot),
         });
         return;
       }
       if (action.puzzle === 'recallClause') {
         ui.clearSpeech();
+        resetFailures();
+        renderer.reactJohn('determined');
         ui.showRecallClausePuzzle({
           onAdjust: () => audio.click(),
           onTest: () => audio.effect('contract'),
-          onMiss: () => audio.error(),
+          onMiss: () => { registerFailure(); audio.error(); },
           onWin: () => execute(action, hotspot),
         });
         return;
       }
       if (action.puzzle === 'storageDirectory') {
         ui.clearSpeech();
+        resetFailures();
+        renderer.reactJohn('determined');
         ui.showStorageDirectoryPuzzle({
           onInspect: () => audio.click(),
-          onMiss: () => audio.error(),
+          onMiss: () => { registerFailure(); audio.error(); },
           onWin: () => execute(action, hotspot),
         });
         return;
@@ -212,7 +235,11 @@ export function createGame({ root, chapters }) {
       return;
     }
     if (verb === 'take' && hotspot.item) {
-      if (state.inventory.some((entry) => entry.id === hotspot.item.id)) { respond(`You already have the ${hotspot.item.label}.`, hotspot); return; }
+      if (state.inventory.some((entry) => entry.id === hotspot.item.id)) {
+        respond(`You already have the ${hotspot.item.label}.`, hotspot);
+        registerFailure();
+        return;
+      }
       state.inventory.push(hotspot.item);
       state.flags[`${hotspot.id}Taken`] = true;
       const response = hotspot.responses.take || `You take the ${hotspot.label}.`;
@@ -220,13 +247,22 @@ export function createGame({ root, chapters }) {
       renderer.render(chapter.scenes[state.sceneId], state, state.selectedVerb);
       respond(response, hotspot);
       renderer.animateInteraction(hotspot, 'pickup');
+      resetFailures();
+      renderer.reactJohn('startled');
       audio.pickup();
       return;
     }
     if (verb === 'use' && selectedItem) {
       const response = randomQuip(useItemQuips, selectedItem.label, hotspot.label);
       respond(response, hotspot);
+      registerFailure();
       audio.error();
+      return;
+    }
+    if (hotspot.responses?.[verb]) {
+      respond(hotspot.responses[verb], hotspot);
+      resetFailures();
+      if (verb === 'talk') renderer.reactCharacter(hotspot.id);
       return;
     }
     const fallback = verb === 'take'
@@ -234,11 +270,15 @@ export function createGame({ root, chapters }) {
       : verb === 'use'
         ? randomQuip(useHotspotQuips, hotspot.label)
         : `You can't ${verb} the ${hotspot.label}.`;
-    respond(hotspot.responses?.[verb] || fallback, hotspot);
+    respond(fallback, hotspot);
+    registerFailure();
     audio.error();
   }
 
   function execute(action, hotspot) {
+    const failedAction = action.sound === 'error';
+    if (failedAction) registerFailure();
+    else resetFailures();
     action.setFlags?.forEach((flag) => { state.flags[flag] = true; });
     action.removeItems?.forEach((id) => { state.inventory = state.inventory.filter((item) => item.id !== id); });
     action.give?.forEach((item) => { if (!state.inventory.some((entry) => entry.id === item.id)) state.inventory.push(item); });
@@ -247,6 +287,8 @@ export function createGame({ root, chapters }) {
     renderer.render(chapter.scenes[state.sceneId], state, state.selectedVerb);
     respond(action.message, hotspot);
     renderer.animateInteraction(hotspot, action.effect || (action.pickup ? 'pickup' : 'success'));
+    if (!failedAction) renderer.reactJohn(action.success ? 'relieved' : 'startled');
+    renderer.reactCharacter(hotspot.id);
     if (action.sound && audio[action.sound]) audio[action.sound]();
     if (action.success && action.effect !== action.sound) audio.effect(action.effect);
     else if (action.pickup) audio.pickup();

@@ -11,7 +11,34 @@
   <meta name="apple-mobile-web-app-title" content="Uhall & Oates" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="format-detection" content="telephone=no" />
+  <meta name="description"
+    content="A satirical 1980s point-and-click adventure. Help John Oates rescue Daryl Hall, outsmart rival movers, and save the hits." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Uhall &amp; Oates — The Game" />
+  <meta property="og:title" content="Uhall &amp; Oates — The Game" />
+  <meta property="og:description"
+    content="Save Daryl. Move everything else. Play a satirical 1980s point-and-click moving-company misadventure." />
+  <meta property="og:url" content="https://j-me.github.io/uhall-and-oates-the-game/" />
+  <meta property="og:image"
+    content="https://j-me.github.io/uhall-and-oates-the-game/assets/social/uhall-oates-social-card.png" />
+  <meta property="og:image:secure_url"
+    content="https://j-me.github.io/uhall-and-oates-the-game/assets/social/uhall-oates-social-card.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"
+    content="John Oates races to move a hand truck while Daryl Hall sings from a crate beside the Uhall and Oates moving truck." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Uhall &amp; Oates — The Game" />
+  <meta name="twitter:description"
+    content="Save Daryl. Move everything else. A satirical 1980s point-and-click moving-company misadventure." />
+  <meta name="twitter:image"
+    content="https://j-me.github.io/uhall-and-oates-the-game/assets/social/uhall-oates-social-card.png" />
+  <meta name="twitter:image:alt"
+    content="John Oates, Daryl Hall, and the Uhall and Oates moving truck at Old Orchard Beach." />
   <title>Uhall & Oates - The Game</title>
+  <link rel="canonical" href="https://j-me.github.io/uhall-and-oates-the-game/" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/app-icons/app-icon-32.png" />
   <link rel="apple-touch-icon" sizes="120x120" href="assets/app-icons/app-icon-120.png" />
@@ -28,15 +55,16 @@
 </head>
 
 <body>
-  <audio id="title-music" data-fallback-src="assets/audio/music/title-original.mp3"
-    preload="auto" autoplay loop></audio>
+  <audio id="title-music" data-fallback-src="assets/audio/music/title-original.mp3" preload="auto" autoplay
+    loop></audio>
   <main id="game" aria-label="Uhall and Oates point and click adventure">
     <header class="topbar">
       <div class="brand"><img class="brand-mark" src="assets/art/ui/uhall-oates-truck-logo-v2.png" alt="" /> UHALL &amp;
         OATES <small>THE GAME</small></div>
       <div class="top-actions">
         <div id="chapter-label" class="chapter-label"></div>
-        <button class="settings-launch" data-open-settings type="button" aria-label="Open game settings">SETTINGS</button>
+        <button class="settings-launch" data-open-settings type="button"
+          aria-label="Open game settings">SETTINGS</button>
       </div>
     </header>
 
@@ -82,7 +110,8 @@
         </div>
       </div>
       <div class="crawl-reveal crawl-reveal--opening">
-        <img src="assets/art/ui/hall-oates-crawl-reveal-v1.png" alt="Daryl Hall points toward the viewer beside John Oates" />
+        <img src="assets/art/ui/hall-oates-crawl-reveal-v1.png"
+          alt="Daryl Hall points toward the viewer beside John Oates" />
         <strong>You Can Go For That!</strong>
       </div>
       <div class="intro-actions"><button id="intro-next" type="button">BEGIN CHAPTER 1 ›</button></div>
@@ -97,7 +126,8 @@
         </div>
       </div>
       <div class="crawl-reveal crawl-reveal--chapter">
-        <img src="assets/art/ui/hall-oates-crawl-reveal-v1.png" alt="Daryl Hall points toward the viewer beside John Oates" />
+        <img src="assets/art/ui/hall-oates-crawl-reveal-v1.png"
+          alt="Daryl Hall points toward the viewer beside John Oates" />
         <strong>You Can Go For That!</strong>
       </div>
       <div class="scene-intro-actions"><button id="scene-intro-next" type="button">NEXT CHAPTER›</button></div>
@@ -120,49 +150,55 @@
 
         <div id="settings-standard-view" class="settings-view">
           <label class="setting-switch">
-          <span><b>Sound</b><small>Music, ambience, and action effects</small></span>
-          <input name="soundEnabled" type="checkbox" />
-          <i aria-hidden="true"></i>
+            <span><b>Sound</b><small>Music, ambience, and action effects</small></span>
+            <input name="soundEnabled" type="checkbox" />
+            <i aria-hidden="true"></i>
           </label>
 
           <fieldset class="music-source">
-          <legend>Music Source</legend>
-          <label><input name="musicMode" type="radio" value="external" /> <span><b>External</b><small>URL, then
-                music-local, then Original</small></span></label>
-          <label><input name="musicMode" type="radio" value="original" /> <span><b>Original</b><small>Repository-safe
-                synth score</small></span></label>
+            <legend>Music Source</legend>
+            <label><input name="musicMode" type="radio" value="external" /> <span><b>External</b><small>URL defined
+                  music</small></span></label>
+            <label><input name="musicMode" type="radio" value="original" /> <span><b>Original</b><small>Repository-safe
+                  synth score</small></span></label>
           </fieldset>
 
           <details id="external-music-fields" class="external-music-fields">
-          <summary>External song URLs <small>(optional)</small></summary>
-          <p>Leave a field empty to use its matching file in <code>assets/audio/music-local/</code>.</p>
-          <label>Title<input type="url" data-track-url="title" placeholder="https://…/title.mp3" /></label>
-          <label>Chapter 1<input type="url" data-track-url="chapter-01" placeholder="https://…/chapter-01.mp3" /></label>
-          <label>Chapter 2<input type="url" data-track-url="chapter-02" placeholder="https://…/chapter-02.mp3" /></label>
-          <label>Chapter 3<input type="url" data-track-url="chapter-03" placeholder="https://…/chapter-03.mp3" /></label>
-          <label>Chapter 4<input type="url" data-track-url="chapter-04" placeholder="https://…/chapter-04.mp3" /></label>
-          <label>Chapter 5<input type="url" data-track-url="chapter-05" placeholder="https://…/chapter-05.mp3" /></label>
-          <label>Chapter 6<input type="url" data-track-url="chapter-06" placeholder="https://…/chapter-06.mp3" /></label>
-          <label>Epilogue<input type="url" data-track-url="outro" placeholder="https://…/epilogue.mp3" /></label>
-          <button id="reset-music-urls" type="button">CLEAR URL OVERRIDES</button>
+            <summary>External song URLs <small>(optional)</small></summary>
+            <p>Leave a field empty to use its matching file in <code>assets/audio/music-local/</code>.</p>
+            <label>Title<input type="url" data-track-url="title" placeholder="https://…/title.mp3" /></label>
+            <label>Chapter 1<input type="url" data-track-url="chapter-01"
+                placeholder="https://…/chapter-01.mp3" /></label>
+            <label>Chapter 2<input type="url" data-track-url="chapter-02"
+                placeholder="https://…/chapter-02.mp3" /></label>
+            <label>Chapter 3<input type="url" data-track-url="chapter-03"
+                placeholder="https://…/chapter-03.mp3" /></label>
+            <label>Chapter 4<input type="url" data-track-url="chapter-04"
+                placeholder="https://…/chapter-04.mp3" /></label>
+            <label>Chapter 5<input type="url" data-track-url="chapter-05"
+                placeholder="https://…/chapter-05.mp3" /></label>
+            <label>Chapter 6<input type="url" data-track-url="chapter-06"
+                placeholder="https://…/chapter-06.mp3" /></label>
+            <label>Epilogue<input type="url" data-track-url="outro" placeholder="https://…/epilogue.mp3" /></label>
+            <button id="reset-music-urls" type="button">CLEAR URL OVERRIDES</button>
           </details>
 
           <label class="setting-switch">
-          <span><b>Debug Mode</b><small>Reveal chapter selection and hotspot outlines</small></span>
-          <input name="debugEnabled" type="checkbox" />
-          <i aria-hidden="true"></i>
+            <span><b>Debug Mode</b><small>Reveal chapter selection and hotspot outlines</small></span>
+            <input name="debugEnabled" type="checkbox" />
+            <i aria-hidden="true"></i>
           </label>
           <div id="debug-chapter-select" class="debug-chapter-select is-hidden" aria-label="Debug chapter selection">
-          <span>DEBUG · CHAPTER SELECT</span>
-          <div>
-            <button type="button" data-debug-chapter="chapter-01">1</button>
-            <button type="button" data-debug-chapter="chapter-02">2</button>
-            <button type="button" data-debug-chapter="chapter-03">3</button>
-            <button type="button" data-debug-chapter="chapter-04">4</button>
-            <button type="button" data-debug-chapter="chapter-05">5</button>
-            <button type="button" data-debug-chapter="chapter-06">6</button>
-            <button type="button" data-debug-chapter="outro" aria-label="Epilogue">E</button>
-          </div>
+            <span>DEBUG · CHAPTER SELECT</span>
+            <div>
+              <button type="button" data-debug-chapter="chapter-01">1</button>
+              <button type="button" data-debug-chapter="chapter-02">2</button>
+              <button type="button" data-debug-chapter="chapter-03">3</button>
+              <button type="button" data-debug-chapter="chapter-04">4</button>
+              <button type="button" data-debug-chapter="chapter-05">5</button>
+              <button type="button" data-debug-chapter="chapter-06">6</button>
+              <button type="button" data-debug-chapter="outro" aria-label="Epilogue">E</button>
+            </div>
           </div>
         </div>
 
@@ -170,8 +206,7 @@
           aria-labelledby="advanced-settings-title">
           <h3 id="advanced-settings-title">ADVANCED JSON</h3>
           <p>Move the complete sound, music URL, and debug configuration between browsers in one block.</p>
-          <textarea id="settings-json-value" rows="8" spellcheck="false"
-            aria-label="Settings JSON"></textarea>
+          <textarea id="settings-json-value" rows="8" spellcheck="false" aria-label="Settings JSON"></textarea>
           <div>
             <button id="copy-settings-json" type="button">COPY CURRENT</button>
             <button id="apply-settings-json" type="button">APPLY JSON</button>

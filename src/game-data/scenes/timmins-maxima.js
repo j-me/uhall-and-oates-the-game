@@ -1,4 +1,5 @@
 import { outroDialogue as dialogue } from '../dialogue/outro.js';
+import { placeCharacter } from '../characters.js';
 
 const art = 'assets/art';
 
@@ -10,9 +11,9 @@ export const timminsMaxima = {
   opening: dialogue.maximaOpening,
   background: `${art}/chapters/chapter-06/return-to-sender-maxima-v2.png`,
   characters: [
-    { src: `${art}/characters/daryl-hall-sprite-v1.png`, alt: 'Daryl Hall, enjoying the aftermath', className: 'npc-idle', bounds: { left: 1, top: 0, width: 66, height: 100 } },
-    { src: `${art}/characters/john-oates-relieved-v1.png`, alt: 'John Oates, refusing trunk duty', className: 'john-idle', bounds: { left: 13, top: 31, width: 15, height: 55 } },
-    { src: `${art}/characters/joe-timmins-sprite-v1.png`, alt: 'Joe Timmins pointing toward the trunk', className: 'npc-idle', bounds: { left: 73, top: 22, width: 16, height: 65 } },
+    placeCharacter('daryl-hall', { alt: 'Daryl Hall, enjoying the aftermath', bounds: { left: 1, top: 0, width: 66, height: 100 } }),
+    placeCharacter('john-oates', { pose: 'relieved', alt: 'John Oates, refusing trunk duty', bounds: { left: 13, top: 31, width: 15, height: 55 } }),
+    placeCharacter('joe-timmins', { alt: 'Joe Timmins pointing toward the trunk', bounds: { left: 73, top: 22, width: 16, height: 65 } }),
   ],
   hotspots: [
     { id: 'daryl-maxima', label: 'Daryl Hall', bounds: { left: 20, top: 5, width: 25, height: 28 }, responses: dialogue.darylMaxima },

@@ -32,7 +32,7 @@ export function showCranePuzzle(root, { onMove, onMiss, onWin }) {
   let busy = false;
 
   const redraw = () => {
-    carriage.style.left = `${12.5 + position * 25}%`;
+    carriage.style.left = `${10 + position * 28}%`;
     claw.classList.toggle('has-fries', carryingFries);
     cabinet.classList.toggle('is-carrying', carryingFries);
     drop.textContent = carryingFries ? 'RELEASE CLAW' : 'LOWER CLAW';

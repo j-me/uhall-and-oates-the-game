@@ -1,16 +1,22 @@
 import { chapterTwoDialogue as dialogue } from '../dialogue/chapter-02.js';
+import { placeCharacter } from '../characters.js';
 const art = 'assets/art';
 
 export const manhattanLoadingZone = {
   id: 'manhattan-loading-zone',
   name: 'Private Eyes in the Big Apple',
   caption: 'A storage maze, a fake investigator, and an invoice with trust issues.',
-  intro: 'Manhattan runs on traffic, shipping, and confidence. Baltos has all three, though only one of them is real.',
+  intro: 'Daryl’s trail reaches Manhattan, where every curb is occupied, every elevator is undersized, and every box claims to be fragile. Baltos—part investigator, part George Costanza impersonator, and entirely certain of himself—may have seen the Reardons’ shipment. Meanwhile, Joe Timmins keeps calling John to ask whether the rescue can be billed as overtime.',
   opening: dialogue.opening,
+  reveal: {
+    src: `${art}/reveals/chapter-02-manhattan-v1.png`,
+    alt: 'Oates steadies a tower of boxes while Baltos investigates baseball cards in Manhattan',
+    tagline: 'Private Eyes. Public Loading Zone.',
+  },
   background: `${art}/chapters/chapter-02/manhattan-loading-zone-v1.png`,
   characters: [
-    { src: `${art}/characters/john-oates-determined-v1.png`, alt: 'John Oates, determined', className: 'john-idle', bounds: { left: 8, top: 43, width: 20, height: 52 } },
-    { src: `${art}/characters/baltos-sprite-v1.png`, alt: 'Baltos, self-appointed investigator', className: 'npc-idle', bounds: { left: 61, top: 40, width: 14, height: 46 } },
+    placeCharacter('john-oates', { pose: 'determined', alt: 'John Oates, determined', bounds: { left: 8, top: 43, width: 20, height: 52 } }),
+    placeCharacter('baltos', { alt: 'Baltos, self-appointed investigator', bounds: { left: 61, top: 40, width: 14, height: 46 } }),
   ],
   hotspots: [
     { id: 'shipping-label', label: 'odd shipping label', bounds: { left: 7, top: 43, width: 9, height: 14 }, item: { id: 'shippingLabel', label: 'shipping label', icon: 'stamp' }, hiddenWhen: ['shipping-labelTaken'], responses: dialogue.shippingLabel },

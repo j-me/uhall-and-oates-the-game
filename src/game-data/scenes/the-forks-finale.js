@@ -1,16 +1,22 @@
 import { chapterSixDialogue as dialogue } from '../dialogue/chapter-06.js';
+import { placeCharacter } from '../characters.js';
 const art = 'assets/art';
 
 export const theForksFinale = {
   id: 'the-forks-finale',
   name: 'You Make My Dreams Come True in The Forks',
   caption: 'The Reardons’ archive sits between Moxie Falls and a very loud rescue plan.',
-  intro: 'At The Forks, the river is louder than the excuses. Oates has reached the Reardons’ last hideout—and Daryl is close.',
+  intro: 'The chase returns to Maine, deep into The Forks, where the Kennebec roars past Moxie Falls and the Reardons have prepared their final broadcast. Daryl is close, the Recall Clause machine is nearly ready, and every mile of John’s impossible moving route has led here. With Jamo commanding the river and Joe Timmins claiming managerial credit from a safe distance, the rescue enters its final run.',
   opening: dialogue.opening,
+  reveal: {
+    src: `${art}/reveals/chapter-06-the-forks-v1.png`,
+    alt: 'Jamo and Oates raft through Maine rapids toward Daryl and the Reardons’ archive',
+    tagline: 'You Make My Rapids Come True!',
+  },
   background: `${art}/chapters/chapter-06/the-forks-finale-v1.png`,
   characters: [
-    { src: `${art}/characters/john-oates-determined-v1.png`, alt: 'John Oates, determined', className: 'john-idle', bounds: { left: 34, top: 44, width: 16, height: 47 } },
-    { src: `${art}/characters/jamo-sprite-v1.png`, alt: 'Jamo, rafting guide', className: 'npc-idle', bounds: { left: 9, top: 36, width: 18, height: 50 } },
+    placeCharacter('john-oates', { pose: 'determined', alt: 'John Oates, determined', bounds: { left: 34, top: 44, width: 16, height: 47 } }),
+    placeCharacter('jamo', { alt: 'Jamo, rafting guide', bounds: { left: 9, top: 36, width: 18, height: 50 } }),
   ],
   hotspots: [
     { id: 'jamo', label: 'Jamo the rafting guide', bounds: { left: 9, top: 37, width: 18, height: 49 }, responses: dialogue.jamo },

@@ -1,16 +1,22 @@
 import { chapterThreeDialogue as dialogue } from '../dialogue/chapter-03.js';
+import { placeCharacter } from '../characters.js';
 const art = 'assets/art';
 
 export const lukeWiffleStadium = {
   id: 'luke-wiffle-stadium',
   name: 'Kiss on My List — Jacuzzi Park',
   caption: 'Luke Jacuzzi keeps every winning delivery lineup on a very sentimental list.',
-  intro: 'At Jacuzzi Park, every ordinary shipment becomes a championship event. John only needs one lead—and a very strange inning.',
+  intro: 'The search moves to Jacuzzi Park, where Luke Jacuzzi announces routine deliveries with the urgency of a championship game. Somewhere inside the stadium is evidence of where the Reardons went next, but Luke believes every dispute should be settled through sportsmanship, spectacle, and unnecessary scoreboard statistics. John has moved pianos up staircases; surely he can survive one inning.',
   opening: dialogue.opening,
+  reveal: {
+    src: `${art}/reveals/chapter-03-jacuzzi-park-v1.png`,
+    alt: 'Luke celebrates while Oates adjusts a spring-loaded wiffle-ball launcher',
+    tagline: 'Put That Wiffle Ball on My List!',
+  },
   background: `${art}/chapters/chapter-03/luke-wiffle-stadium-v1.png`,
   characters: [
-    { src: `${art}/characters/john-oates-relieved-v1.png`, alt: 'John Oates, dryly amused', className: 'john-idle', bounds: { left: 42, top: 45, width: 16, height: 47 } },
-    { src: `${art}/characters/luke-jacuzzi-sprite-v1.png`, alt: 'Luke Jacuzzi', className: 'npc-idle', bounds: { left: 72, top: 39, width: 17, height: 48 } },
+    placeCharacter('john-oates', { pose: 'relieved', alt: 'John Oates, dryly amused', bounds: { left: 42, top: 45, width: 16, height: 47 } }),
+    placeCharacter('luke-jacuzzi', { bounds: { left: 72, top: 39, width: 17, height: 48 } }),
   ],
   hotspots: [
     { id: 'equipment-shed', label: 'equipment shed', bounds: { left: 0, top: 27, width: 17, height: 30 }, item: { id: 'wiffleBall', label: 'regulation wiffle ball', icon: 'ball' }, visibleWhen: ['scoreboardAligned'], hiddenWhen: ['equipment-shedTaken'], responses: dialogue.shed },

@@ -1,4 +1,5 @@
 import { chapterOneDialogue } from '../dialogue/chapter-01.js';
+import { placeCharacter } from '../characters.js';
 
 const root = 'assets';
 
@@ -6,16 +7,23 @@ export const oldOrchardPier = {
   id: 'old-orchard-pier',
   name: 'Old Orchard Beach Pier — Ships, Seagulls, and a Singing Crate',
   caption: 'A fake Reardon promotion trapped Daryl in one crate; the matching empty crate was left behind as a decoy.',
-  intro: 'Old Orchard Beach Pier closes around Oates like a trap. Somewhere beyond the boardwalk, a Reardon truck is already carrying Daryl away.',
+  intro: 'Old Orchard Beach was supposed to be Uhall & Oates’ biggest promotion yet. Instead, the Reardons turned a fake “New Hit Record” delivery into a very real kidnapping, leaving John with an empty decoy crate and a boardwalk full of bad witnesses. Somewhere beyond the pier, Daryl is being shipped toward an encore he never agreed to perform.',
   opening: chapterOneDialogue.opening,
+  reveal: {
+    src: `${root}/art/reveals/chapter-01-old-orchard-v1.png`,
+    alt: 'Oates distracts a pier gull with fries while Daryl sings from a departing shipping crate',
+    tagline: 'Out of Touch. Still in Transit.',
+  },
   background: `${root}/art/chapters/chapter-01/old-orchard-pier-v1.png`,
   backgroundStates: [
     { when: ['gullDistracted'], src: `${root}/art/chapters/chapter-01/old-orchard-pier-gull-gone-v1.png` },
   ],
-  characters: [{
-    src: `${root}/art/characters/john-oates-worried-v1.png`, alt: 'John Oates, alarmed but ready to work', className: 'john-idle',
-    bounds: { left: 9, top: 41, width: 21, height: 54 },
-  }],
+  characters: [
+    placeCharacter('john-oates', {
+      pose: 'worried', alt: 'John Oates, alarmed but ready to work',
+      bounds: { left: 9, top: 41, width: 21, height: 54 },
+    }),
+  ],
   hotspots: [
     {
       id: 'reardon-truck', label: 'departing Reardon truck', bounds: { left: 59, top: 28, width: 18, height: 19 },

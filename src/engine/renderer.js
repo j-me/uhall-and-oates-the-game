@@ -1,8 +1,22 @@
+import {
+  getCharacterIdForHotspot,
+  getCharacterSprite,
+  getReactionAssets,
+  getReactionSprite,
+} from '../game-data/characters.js';
+
 export function createRenderer(root, { onHotspot }) {
   const art = root.querySelector('#scene-art');
   const layer = root.querySelector('#hotspots');
   const caption = root.querySelector('#scene-caption');
   let buttons = [];
+  let reactionTimer;
+  const npcReactionTimers = new Map();
+
+  getReactionAssets().forEach((src) => {
+    const image = new Image();
+    image.src = src;
+  });
 
   function render(scene, state, verb) {
     art.className = `scene-art ${scene.artClass || ''}`;
@@ -28,6 +42,10 @@ export function createRenderer(root, { onHotspot }) {
       const image = document.createElement('img');
       image.className = `scene-character ${character.className || ''}`;
       image.src = character.src; image.alt = character.alt;
+      if (character.id) {
+        image.dataset.character = character.id;
+        image.dataset.defaultSrc = character.src;
+      }
       Object.assign(image.style, Object.fromEntries(Object.entries(character.bounds).map(([key, value]) => [key, `${value}%`])));
       art.append(image);
     });
@@ -83,5 +101,40 @@ export function createRenderer(root, { onHotspot }) {
     window.setTimeout(() => marker.remove(), 850);
   }
 
-  return { render, setVerb, removeHotspot, animateInteraction };
+  function reactJohn(expression = 'startled', duration = 1050) {
+    const john = art.querySelector('[data-character="john-oates"]');
+    const reactionSrc = getCharacterSprite('john-oates', expression);
+    if (!john || !reactionSrc) return;
+    window.clearTimeout(reactionTimer);
+    john.src = reactionSrc;
+    john.classList.remove('john-reaction--determined', 'john-reaction--frustrated', 'john-reaction--relieved', 'john-reaction--startled');
+    // Restart the animation even when the same reaction fires twice.
+    void john.offsetWidth;
+    john.classList.add(`john-reaction--${expression}`);
+    reactionTimer = window.setTimeout(() => {
+      if (!john.isConnected) return;
+      john.src = john.dataset.defaultSrc;
+      john.classList.remove(`john-reaction--${expression}`);
+    }, duration);
+  }
+
+  function reactCharacter(hotspotId, duration = 1250) {
+    const characterId = getCharacterIdForHotspot(hotspotId);
+    const reactionSrc = getReactionSprite(characterId);
+    const character = characterId && art.querySelector(`[data-character="${characterId}"]`);
+    if (!character || !reactionSrc) return;
+    window.clearTimeout(npcReactionTimers.get(characterId));
+    character.src = reactionSrc;
+    character.classList.remove('npc-reaction');
+    void character.offsetWidth;
+    character.classList.add('npc-reaction');
+    npcReactionTimers.set(characterId, window.setTimeout(() => {
+      if (!character.isConnected) return;
+      character.src = character.dataset.defaultSrc;
+      character.classList.remove('npc-reaction');
+      npcReactionTimers.delete(characterId);
+    }, duration));
+  }
+
+  return { render, setVerb, removeHotspot, animateInteraction, reactJohn, reactCharacter };
 }

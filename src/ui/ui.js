@@ -19,6 +19,8 @@ export function createUI(root, callbacks) {
   const sceneIntroTitle = root.querySelector('#scene-intro-title');
   const sceneIntroCopy = root.querySelector('#scene-intro-copy');
   const sceneIntroNext = root.querySelector('#scene-intro-next');
+  const sceneIntroRevealImage = sceneIntroRoot.querySelector('.crawl-reveal img');
+  const sceneIntroRevealTagline = sceneIntroRoot.querySelector('.crawl-reveal strong');
   const inventoryCursor = document.createElement('div');
   inventoryCursor.className = 'inventory-cursor-ghost';
   inventoryCursor.setAttribute('aria-hidden', 'true');
@@ -101,6 +103,9 @@ export function createUI(root, callbacks) {
       sceneIntroKicker.textContent = chapterTitle.toUpperCase();
       sceneIntroTitle.textContent = scene.name;
       sceneIntroCopy.textContent = scene.intro || scene.caption;
+      sceneIntroRevealImage.src = scene.reveal?.src || 'assets/art/ui/hall-oates-crawl-reveal-v1.png';
+      sceneIntroRevealImage.alt = scene.reveal?.alt || 'Daryl Hall points toward the viewer beside John Oates';
+      sceneIntroRevealTagline.textContent = scene.reveal?.tagline || 'You Can Go For That!';
       sceneIntroRoot.classList.remove('is-hidden');
       sceneIntroNext.onclick = () => {
         sceneIntroRoot.classList.add('is-hidden');

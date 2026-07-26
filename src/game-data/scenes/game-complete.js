@@ -1,4 +1,5 @@
 import { outroDialogue as dialogue } from '../dialogue/outro.js';
+import { placeCharacter } from '../characters.js';
 
 const art = 'assets/art';
 
@@ -13,10 +14,10 @@ export const gameComplete = {
   next: { chapterId: 'outro', sceneId: 'timmins-maxima', skipIntro: true },
   background: `${art}/chapters/chapter-06/the-forks-finale-v1.png`,
   characters: [
-    { src: `${art}/characters/john-oates-relieved-v1.png`, alt: 'John Oates, relieved', className: 'john-idle', bounds: { left: 7, top: 43, width: 18, height: 48 } },
-    { src: `${art}/characters/daryl-hall-sprite-v1.png`, alt: 'Daryl Hall, newly rescued', className: 'npc-idle', bounds: { left: 26, top: 41, width: 17, height: 49 } },
-    { src: `${art}/characters/jesse-reardon-sprite-v1.png`, alt: 'Jesse Reardon, defeated record executive', className: 'npc-idle', bounds: { left: 63, top: 39, width: 16, height: 48 } },
-    { src: `${art}/characters/joe-reardon-sprite-v1.png`, alt: 'Joe Reardon, defeated record executive', className: 'npc-idle', bounds: { left: 69, top: 35, width: 34, height: 50 } },
+    placeCharacter('john-oates', { pose: 'relieved', alt: 'John Oates, relieved', bounds: { left: 7, top: 43, width: 18, height: 48 } }),
+    placeCharacter('daryl-hall', { alt: 'Daryl Hall, newly rescued', bounds: { left: 26, top: 41, width: 17, height: 49 } }),
+    placeCharacter('jesse-reardon', { alt: 'Jesse Reardon, defeated record executive', bounds: { left: 63, top: 39, width: 16, height: 48 } }),
+    placeCharacter('joe-reardon', { alt: 'Joe Reardon, defeated record executive', bounds: { left: 69, top: 35, width: 34, height: 50 } }),
   ],
   hotspots: [
     { id: 'daryl-outro', label: 'Daryl Hall', bounds: { left: 27, top: 42, width: 15, height: 46 }, responses: dialogue.daryl },
