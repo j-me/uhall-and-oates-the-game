@@ -51,7 +51,7 @@ The Settings panel can also copy the complete configuration as JSON or apply a p
 
 ### Settings query URL
 
-Pass a complete configuration at startup with either a `settings` query parameter or an SMS-friendly bare fragment. The query accepts URL-encoded JSON or Base64. A long bare fragment is treated as Base64 or URL-safe Base64, requiring no equals sign, colon, or other delimiter. The configuration takes precedence over browser-saved settings and is saved after it is validated. The game then removes the consumed configuration from the address bar so later Settings changes and refreshes use the saved configuration. Older `#settings:` links remain supported.
+Pass a complete configuration at startup with the `settings` query parameter. It accepts URL-encoded JSON, standard Base64, or URL-safe Base64. The configuration takes precedence over browser-saved settings and is saved after it is validated. The game then removes the consumed query parameter from the address bar so later Settings changes and refreshes use the saved configuration.
 
 For a URL-encoded JSON link using the ignored `settings.local.json`, run:
 
@@ -68,7 +68,7 @@ npm run settings:url:base64
 That prints:
 
 ```text
-https://j-me.github.io/uhall-and-oates-the-game/#[base64settings]
+https://j-me.github.io/uhall-and-oates-the-game/?settings=[base64settings]
 ```
 
 The JSON command prints an `index.html?settings=...` URL for local use. You can also provide any hosted page address as the second argument:
@@ -83,7 +83,7 @@ Add `base64` as the final argument to generate a hosted Base64URL link:
 node scripts/create-settings-url.mjs settings.local.json https://example.com/uhall-and-oates/ base64
 ```
 
-Malformed query JSON is ignored and the game falls back to the saved settings.
+Malformed query settings are ignored and the game falls back to the saved settings.
 
 ## Campaign puzzle flow
 

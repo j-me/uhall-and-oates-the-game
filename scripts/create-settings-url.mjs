@@ -23,7 +23,4 @@ if (!['json', 'base64'].includes(format)) {
   process.exit(1);
 }
 
-const outputUrl = format === 'base64'
-  ? `${pageUrl.split('#')[0]}#${encodedSettings}`
-  : `${pageUrl}${separator}settings=${encodedSettings}`;
-console.log(outputUrl);
+console.log(`${pageUrl}${separator}settings=${encodedSettings}`);
