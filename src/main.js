@@ -1,4 +1,5 @@
 import { createGame } from './engine/game.js';
+import { createAssetPreloader } from './engine/preloader.js';
 import { chapters } from './game-data/registry.js';
 import { createSettings } from './ui/settings.js';
 
@@ -9,7 +10,17 @@ const introNext = document.getElementById('intro-next');
 const titleMusic = document.getElementById('title-music');
 let titleFallbackAttempted = false;
 let settings;
-const game = createGame({ root: gameRoot, chapters, onReturnHome: showHomeScreen });
+const preloader = createAssetPreloader(chapters);
+const chapterOneReady = preloader.preloadChapter('chapter-01');
+const game = createGame({
+  root: gameRoot,
+  chapters,
+  onReturnHome: showHomeScreen,
+  onChapterStart(chapterId) {
+    preloader.preloadChapter(chapterId);
+    preloader.preloadNext(chapterId);
+  },
+});
 titleMusic.volume = 0.34;
 
 function startTitleMusic() {
@@ -29,9 +40,15 @@ function showHomeScreen() {
   startTitleMusic();
 }
 
-function beginChapter() {
+async function beginChapter() {
+  const originalLabel = introNext.textContent;
+  introNext.disabled = true;
+  introNext.textContent = 'LOADING THE TRUCK…';
+  await chapterOneReady;
   gameRoot.classList.toggle('debug-mode', settings.values.debugEnabled);
   introScreen.classList.add('is-hidden');
+  introNext.disabled = false;
+  introNext.textContent = originalLabel;
   game.start('chapter-01', 'old-orchard-pier', { showIntro: false });
 }
 

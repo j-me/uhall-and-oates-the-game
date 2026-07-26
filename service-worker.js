@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uhall-oates-v25';
+const CACHE_NAME = 'uhall-oates-v26';
 const APP_SHELL = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const APP_SHELL = [
   './src/main.js',
   './src/engine/audio.js',
   './src/engine/game.js',
+  './src/engine/preloader.js',
   './src/engine/renderer.js',
   './src/engine/state.js',
   './src/ui/ui.js',

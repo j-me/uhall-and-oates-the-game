@@ -70,7 +70,7 @@ function randomQuip(quips, ...values) {
   return quips[Math.floor(Math.random() * quips.length)](...values);
 }
 
-export function createGame({ root, chapters, onReturnHome }) {
+export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
   const state = createState();
   const audio = createAudio();
   const ui = createUI(root, { onVerb: selectVerb, onItem: selectItem });
@@ -106,6 +106,7 @@ export function createGame({ root, chapters, onReturnHome }) {
   function start(chapterId, sceneId, { showIntro = true } = {}) {
     chapter = chapters[chapterId];
     if (!chapter) throw new Error(`Unknown chapter: ${chapterId}`);
+    onChapterStart?.(chapterId);
     state.chapterId = chapterId;
     resetFailures();
     ui.setChapter(chapter.title);
