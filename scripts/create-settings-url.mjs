@@ -24,6 +24,6 @@ if (!['json', 'base64'].includes(format)) {
 }
 
 const outputUrl = format === 'base64'
-  ? `${pageUrl.split('#')[0]}#settings:${encodedSettings}`
+  ? `${pageUrl.split('#')[0]}#${encodedSettings}`
   : `${pageUrl}${separator}settings=${encodedSettings}`;
 console.log(outputUrl);

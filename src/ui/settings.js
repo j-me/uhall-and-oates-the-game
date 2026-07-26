@@ -60,10 +60,11 @@ function parseSettingsParameter(value) {
 }
 
 function loadSettings() {
-  const hashPrefix = '#settings:';
-  const hashSettings = window.location.hash.startsWith(hashPrefix)
-    ? window.location.hash.slice(hashPrefix.length)
-    : null;
+  const legacyHashPrefix = '#settings:';
+  const bareHash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
+  const hashSettings = window.location.hash.startsWith(legacyHashPrefix)
+    ? window.location.hash.slice(legacyHashPrefix.length)
+    : (bareHash.length > 80 ? bareHash : null);
   const querySettings = new URLSearchParams(window.location.search).get('settings');
   const suppliedSettings = hashSettings ?? querySettings;
   if (suppliedSettings === null) return loadSavedSettings();
@@ -72,7 +73,7 @@ function loadSettings() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
     const cleanUrl = new URL(window.location.href);
     cleanUrl.searchParams.delete('settings');
-    if (cleanUrl.hash.startsWith(hashPrefix)) cleanUrl.hash = '';
+    if (hashSettings !== null) cleanUrl.hash = '';
     window.history.replaceState(null, '', `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
     return settings;
   } catch {

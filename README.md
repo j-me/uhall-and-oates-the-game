@@ -51,7 +51,7 @@ The Settings panel can also copy the complete configuration as JSON or apply a p
 
 ### Settings query URL
 
-Pass a complete configuration at startup with either a `settings` query parameter or the SMS-friendly `#settings:` fragment. The query accepts URL-encoded JSON or Base64; the fragment accepts Base64 or URL-safe Base64 without an equals-sign delimiter. The configuration takes precedence over browser-saved settings and is saved after it is validated. The game then removes the consumed configuration from the address bar so later Settings changes and refreshes use the saved configuration.
+Pass a complete configuration at startup with either a `settings` query parameter or an SMS-friendly bare fragment. The query accepts URL-encoded JSON or Base64. A long bare fragment is treated as Base64 or URL-safe Base64, requiring no equals sign, colon, or other delimiter. The configuration takes precedence over browser-saved settings and is saved after it is validated. The game then removes the consumed configuration from the address bar so later Settings changes and refreshes use the saved configuration. Older `#settings:` links remain supported.
 
 For a URL-encoded JSON link using the ignored `settings.local.json`, run:
 
@@ -68,7 +68,7 @@ npm run settings:url:base64
 That prints:
 
 ```text
-https://j-me.github.io/uhall-and-oates-the-game/#settings:[base64settings]
+https://j-me.github.io/uhall-and-oates-the-game/#[base64settings]
 ```
 
 The JSON command prints an `index.html?settings=...` URL for local use. You can also provide any hosted page address as the second argument:
