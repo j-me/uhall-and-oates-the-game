@@ -1,8 +1,8 @@
 # Uhall & Oates: The Game
 
-A complete six-chapter browser point-and-click adventure with a two-scene epilogue. It uses a classic verb-and-inventory interface, exaggerated 2D adventure-game art, chat-bubble dialogue, CRT presentation, puzzle-state animations, and chapter-specific MP3 music.
+A two-campaign browser point-and-click adventure: the complete six-chapter original with a two-scene epilogue, plus the seven-chapter time-travel sequel **Uhall & Oates II: Adult Relocation**. It uses a classic verb-and-inventory interface, exaggerated 2D adventure-game art, chat-bubble dialogue, CRT presentation, puzzle-state animations, and chapter-specific MP3 music.
 
-John Oates follows the Reardons’ shipping trail from Old Orchard Beach to New York, London, Tokyo, and The Forks, Maine to rescue Daryl Hall and break Reardon Records’ Recall Clause. The game’s implementation and story continuity are documented in [`docs/uhall-oates-production-outline.md`](docs/uhall-oates-production-outline.md).
+John Oates follows the Reardons’ shipping trail from Old Orchard Beach to New York, London, Tokyo, and The Forks, Maine to rescue Daryl Hall and break Reardon Records’ Recall Clause. Then a 1993 Maxima scatters John, Daryl, and Michael McDonald across four decades. The campaigns are documented in [`docs/uhall-oates-production-outline.md`](docs/uhall-oates-production-outline.md) and [`docs/adult-relocation-production-outline.md`](docs/adult-relocation-production-outline.md).
 
 ## Run
 
@@ -34,7 +34,7 @@ The phone layout uses dynamic viewport units and display safe areas for current 
 
 ## Local and distributable music
 
-The repository ships with eight original synth cues in `assets/audio/music/`. Their note patterns are defined by this project and can be regenerated with:
+The repository ships with sixteen original synth cues in `assets/audio/music/`. Their note patterns are defined by this project and can be regenerated with:
 
 ```sh
 node scripts/generate-repo-music.mjs
@@ -53,6 +53,8 @@ Optional files in `assets/audio/music-local/` use neutral slot-based names:
 - `title.mp3`
 - `chapter-01.mp3` through `chapter-06.mp3`
 - `outro.mp3`
+- `adult-01.mp3` through `adult-07.mp3`
+- `adult-outro.mp3`
 
 Settings are saved in the browser for future sessions. URL fields are optional and can point to any browser-playable audio resource whose host permits cross-origin playback.
 The Settings panel can also copy the complete configuration as JSON or apply a pasted JSON block, making it easy to move every music URL and toggle to another browser at once.
@@ -106,21 +108,27 @@ Each chapter has a small, ordered inventory chain. Items are consumed once their
 
 ## Where things go
 
-- `src/game-data/chapters/` — one declarative JSON-like module per chapter.
-- `src/game-data/scenes/` — reusable scene definitions and hotspot lists.
-- `src/game-data/dialogue/` — dialogue trees, localization, and cutscene text.
-- `src/game-data/puzzles/` — self-contained interactive puzzle controllers and shared overlay helpers.
+- `src/game-data/campaigns/original/` — original campaign, `original-chapter-*`, `original-scene-*`, and `original-dialogue-*` modules.
+- `src/game-data/campaigns/adult-relocation/` — sequel campaign plus `adult-chapter-*` and `adult-scene-*` modules.
+- `src/game-data/puzzles/original/` — original-campaign interactive puzzle controllers.
+- `src/game-data/puzzles/shared/` — reusable puzzle presentation and the data-driven logic console.
+- `src/game-data/items/` — inventory inspection copy shared by the engine.
+- `src/game-data/debug/` — campaign test loadouts.
 - `src/engine/` — renderer, game state, interactions, scene loading, and save support.
 - `src/ui/` — shared inventory, verb bar, dialogue, completion, and video presentation.
-- `assets/art/` — backgrounds, characters, props, and UI art, organized by chapter.
+- `assets/art/campaigns/original/` — original-campaign chapter backgrounds, reveal cards, and props.
+- `assets/art/campaigns/adult-relocation/` — sequel chapter backgrounds and reveal cards.
+- `assets/art/characters/` and `assets/art/ui/` — character and interface art shared by both campaigns.
 - `assets/audio/` — music, ambience, and sound effects.
 - `assets/fonts/` — licensed fonts.
 
 ## Add a chapter
 
-1. Create `src/game-data/chapters/chapter-02.js` from `chapter-01.js`.
-2. Add its initial scene to `src/game-data/scenes/`.
-3. Import/register the chapter in `src/game-data/registry.js`.
+1. Create a prefixed chapter module inside the campaign’s `chapters/` folder.
+2. Create prefixed scene modules inside the campaign’s `scenes/` folder.
+3. Register the chapter in its campaign entry module; the global registry only exposes campaigns.
 4. Put supplied art and audio in matching `assets/` folders, then reference paths in the scene definition.
+
+See [`src/game-data/README.md`](src/game-data/README.md) for naming and runtime-ID compatibility rules.
 
 Scene hotspots use percentage coordinates, so they scale with the scene image. The demo's CSS illustrations can later be replaced by background images without altering puzzle code.

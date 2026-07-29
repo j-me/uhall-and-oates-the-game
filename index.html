@@ -92,14 +92,18 @@
         <img class="anniversary-badge" src="assets/art/ui/20th-something-anniversary-badge-v1.png"
           alt="The 20th-something year anniversary" />
       </div>
-      <button id="start-game" type="button">GET STARTED</button>
+      <div class="campaign-actions">
+        <button id="start-game" type="button">PLAY THE ORIGINAL</button>
+        <button id="start-sequel" type="button">PLAY ADULT RELOCATION</button>
+        <button id="continue-sequel" class="is-hidden" type="button">CONTINUE ADULT RELOCATION</button>
+      </div>
       <p>UHALL &amp; OATES - THE GAME</p>
       <p class="production-credit">&copy; 2026 A Woman is Wild Production</p>
     </section>
     <section id="intro-screen" class="intro-screen is-hidden" aria-live="polite" aria-label="Game introduction">
       <div class="crawl-horizon" aria-hidden="true"></div>
       <div class="crawl-stage">
-        <div class="intro-crawl">
+        <div id="opening-crawl-copy" class="intro-crawl">
           <p class="intro-kicker">OLD ORCHARD BEACH, MAINE · 1986</p>
           <h1>OUT OF TOUCH<br />IN O.O.B.</h1>
           <p>Uhall &amp; Oates moves what matters. Mostly furniture. Occasionally the entire burden of a two-person
@@ -113,7 +117,7 @@
         </div>
       </div>
       <div class="crawl-reveal crawl-reveal--opening">
-        <img src="assets/art/ui/hall-oates-crawl-reveal-v1.png"
+        <img src="assets/art/campaigns/original/reveals/hall-oates-crawl-reveal-v1.png"
           alt="Daryl Hall points toward the viewer beside John Oates" />
         <strong>You Can Go For That!</strong>
       </div>
@@ -129,7 +133,7 @@
         </div>
       </div>
       <div class="crawl-reveal crawl-reveal--chapter">
-        <img src="assets/art/ui/hall-oates-crawl-reveal-v1.png"
+        <img src="assets/art/campaigns/original/reveals/hall-oates-crawl-reveal-v1.png"
           alt="Daryl Hall points toward the viewer beside John Oates" />
         <strong>You Can Go For That!</strong>
       </div>
@@ -183,6 +187,16 @@
             <label>Chapter 6<input type="url" data-track-url="chapter-06"
                 placeholder="https://…/chapter-06.mp3" /></label>
             <label>Epilogue<input type="url" data-track-url="outro" placeholder="https://…/epilogue.mp3" /></label>
+            <hr />
+            <b>ADULT RELOCATION</b>
+            <label>Sequel 1<input type="url" data-track-url="adult-01" placeholder="https://…/adult-01.mp3" /></label>
+            <label>Sequel 2<input type="url" data-track-url="adult-02" placeholder="https://…/adult-02.mp3" /></label>
+            <label>Sequel 3<input type="url" data-track-url="adult-03" placeholder="https://…/adult-03.mp3" /></label>
+            <label>Sequel 4<input type="url" data-track-url="adult-04" placeholder="https://…/adult-04.mp3" /></label>
+            <label>Sequel 5<input type="url" data-track-url="adult-05" placeholder="https://…/adult-05.mp3" /></label>
+            <label>Sequel 6<input type="url" data-track-url="adult-06" placeholder="https://…/adult-06.mp3" /></label>
+            <label>Sequel 7<input type="url" data-track-url="adult-07" placeholder="https://…/adult-07.mp3" /></label>
+            <label>Sequel Epilogue<input type="url" data-track-url="adult-outro" placeholder="https://…/adult-outro.mp3" /></label>
             <button id="reset-music-urls" type="button">CLEAR URL OVERRIDES</button>
           </details>
 
@@ -201,6 +215,17 @@
               <button type="button" data-debug-chapter="chapter-05">5</button>
               <button type="button" data-debug-chapter="chapter-06">6</button>
               <button type="button" data-debug-chapter="outro" aria-label="Epilogue">E</button>
+            </div>
+            <span>ADULT RELOCATION</span>
+            <div>
+              <button type="button" data-debug-chapter="adult-01">1</button>
+              <button type="button" data-debug-chapter="adult-02">2</button>
+              <button type="button" data-debug-chapter="adult-03">3</button>
+              <button type="button" data-debug-chapter="adult-04">4</button>
+              <button type="button" data-debug-chapter="adult-05">5</button>
+              <button type="button" data-debug-chapter="adult-06">6</button>
+              <button type="button" data-debug-chapter="adult-07">7</button>
+              <button type="button" data-debug-chapter="adult-outro" aria-label="Sequel epilogue">E</button>
             </div>
           </div>
         </div>

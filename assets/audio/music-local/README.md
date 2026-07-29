@@ -14,3 +14,11 @@ Expected optional filenames:
 - `chapter-05.mp3`
 - `chapter-06.mp3`
 - `outro.mp3`
+- `adult-01.mp3`
+- `adult-02.mp3`
+- `adult-03.mp3`
+- `adult-04.mp3`
+- `adult-05.mp3`
+- `adult-06.mp3`
+- `adult-07.mp3`
+- `adult-outro.mp3`

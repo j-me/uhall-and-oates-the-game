@@ -2,88 +2,91 @@ import { createRenderer } from './renderer.js';
 import { createState } from './state.js';
 import { createUI } from '../ui/ui.js';
 import { createAudio } from './audio.js';
-
-const inventoryDetails = {
-  emptyTapeRoll: 'An empty roll of packing tape. It has done all it can for this company, which is more than Joe Timmins can say about most employees.',
-  taffyCoil: 'A warm coil of saltwater taffy. Stretchy, sticky, and mechanically promising in the deeply questionable way of seaside engineering.',
-  frenchFries: 'French fries in a striped carton. Their smell is strong enough to negotiate with a gull, a customs officer, or a small nation.',
-  privateEyesManifest: 'A shipping manifest marked “PRIVATE EYES ONLY.” It records the Reardons’ New York consignment and Daryl’s coded pallet rhythm.',
-  shippingLabel: 'A purple shipping label with three circles, one arrow, and the reassuring disclaimer “NOT FRAGILE, EMOTIONALLY.”',
-  toppsPack: 'A sealed 1987 Topps baseball-card pack. Its wax wrapper and notoriously durable stick of gum may be more useful than the cards—unless Baltos finds the one he wants.',
-  shreddedInvoice: 'A Reardon invoice reconstructed by Baltos on a wax card wrapper with fossilized gum. Its delivery numbers double as a batting-order sequence.',
-  wiffleBall: 'A regulation wiffle ball from Luke’s equipment shed. It is designed to load into the spring launcher built under home plate.',
-  londonShippingLabel: 'A Reardon shipping label stamped for London. The routing marks suggest it is hiding a far larger operation.',
-  reversibleInk: 'An old record-shop dispatch stamp with a rotating barrel. One side says “ROUTE COPY WITHHELD”; the other says “ROUTE COPY RELEASED.”',
-  rejectedShippingForm: 'A rejected “NO CAN DO” shipping form. Faint carbon marks beneath the rejection copy suggest another document is hiding inside it.',
-  artistAuthorization: 'An artist-export authorization revealed by Michael McDonald’s keyboard chord, then signed and sealed with impeccable confidence.',
-  tokyoAccessPass: 'A temporary Tokyo cargo pass. It will open the recording-truck bay once the shipping service lift is unlocked.',
-  deliveryDocket: 'A backstage delivery docket for Reardon’s recording truck. It lists Service Lift C and a shipment of “one dramatic keyboard, no questions.”',
-  counterMelody: 'Daryl’s unfinished counter-melody: part rescue clue, part contractual loophole, and probably too dramatic for a box label.',
-  returnManifest: 'A Reardon return manifest routing the recording truck’s hidden contract archive back to The Forks, Maine. It contradicts their claim that the Tokyo transfer was permanent.',
-};
-
-const debugLoadouts = {
-  'chapter-01': [{ id: 'emptyTapeRoll', label: 'empty tape roll', icon: 'tape' }],
-  'chapter-02': [{ id: 'privateEyesManifest', label: 'Private Eyes manifest', icon: 'invoice' }],
-  'chapter-03': [{ id: 'shreddedInvoice', label: 'reconstructed invoice', icon: 'invoice' }, { id: 'privateEyesManifest', label: 'Private Eyes manifest', icon: 'invoice' }],
-  'chapter-04': [{ id: 'londonShippingLabel', label: 'London shipping label', icon: 'tag' }, { id: 'privateEyesManifest', label: 'Private Eyes manifest', icon: 'invoice' }],
-  'chapter-05': [{ id: 'tokyoAccessPass', label: 'Tokyo access pass', icon: 'pass' }, { id: 'privateEyesManifest', label: 'Private Eyes manifest', icon: 'invoice' }],
-  'chapter-06': [
-    { id: 'counterMelody', label: 'Daryl’s counter-melody', icon: 'melody' },
-    { id: 'returnManifest', label: 'The Forks return manifest', icon: 'sheet' },
-    { id: 'privateEyesManifest', label: 'Private Eyes manifest', icon: 'invoice' },
-  ],
-  outro: [{ id: 'emptyTapeRoll', label: 'empty tape roll', icon: 'tape' }],
-};
+import { createSaveStore } from './save.js';
+import { itemDescriptions } from '../game-data/items/item-descriptions.js';
+import { debugChapterStates, debugLoadouts } from '../game-data/debug/debug-loadouts.js';
 
 const takeQuips = [
-  (target) => `Oates tries to take the ${target}. It has apparently signed an exclusive deal with the scenery.`,
-  (target) => `The ${target} refuses to move. Joe Timmins will still deduct this from Oates’s paycheck.`,
-  (target) => `Oates lifts with his knees. The ${target} counters with tenure.`,
-  (target) => `There is no room in the truck for the ${target}, mostly because Daryl reserved it for scarves.`,
-  (target) => `The ${target} is not technically nailed down, but it has a very convincing attitude.`,
-  (target) => `Taking the ${target} would require paperwork, a dolly, and fewer witnesses.`,
-  (target) => `Oates cannot take the ${target}. It is out of touch, out of reach, and possibly unionized.`,
-  (target) => `The ${target} stays put. Somewhere, Joe Timmins calls this a productivity issue.`,
+  (actor, target) => `${actor} tries to take the ${target}. It has apparently signed an exclusive deal with the scenery.`,
+  (actor, target) => `The ${target} refuses to move. Joe Timmins will still find a way to deduct this from ${actor}’s paycheck.`,
+  (actor, target) => `${actor} lifts with proper form. The ${target} counters with tenure.`,
+  (actor, target) => `There is no room in the truck for the ${target}; accounting has reserved the space for scarves.`,
+  (actor, target) => `The ${target} is not technically nailed down, but it has a very convincing attitude toward ${actor}.`,
+  (actor, target) => `Taking the ${target} would require paperwork, a dolly, and fewer witnesses than ${actor} currently has.`,
+  (actor, target) => `${actor} cannot take the ${target}. It is out of touch, out of reach, and possibly unionized.`,
+  (actor, target) => `The ${target} stays put. Somewhere, Joe Timmins calls this ${actor}’s productivity issue.`,
 ];
 
 const useItemQuips = [
-  (item, target) => `Oates introduces the ${item} to the ${target}. They agree to remain professional acquaintances.`,
-  (item, target) => `The ${item} and the ${target} have no chemistry. Daryl would try adding a saxophone.`,
-  (item, target) => `Using the ${item} on the ${target} produces no result, but a surprisingly firm “no can do.”`,
-  (item, target) => `The ${target} is immune to the persuasive power of the ${item}.`,
-  (item, target) => `Oates tries the ${item}. The ${target} responds by doing exactly what it was already doing.`,
-  (item, target) => `That combination belongs on nobody’s list—not even Kiss’s.`,
-  (item, target) => `The ${item} cannot solve the ${target}. Joe Timmins immediately invoices Oates for consulting.`,
-  (item, target) => `For one hopeful second, the ${item} almost makes sense here. Then the second ends.`,
+  (actor, item, target) => `${actor} introduces the ${item} to the ${target}. They agree to remain professional acquaintances.`,
+  (actor, item, target) => `The ${item} and the ${target} have no chemistry. ${actor} considers adding a saxophone and decides the situation is already dangerous enough.`,
+  (actor, item, target) => `${actor} uses the ${item} on the ${target} and receives a surprisingly firm “no can do.”`,
+  (actor, item, target) => `The ${target} is immune to ${actor} and the persuasive power of the ${item}.`,
+  (actor, item, target) => `${actor} tries the ${item}. The ${target} responds by doing exactly what it was already doing.`,
+  (actor, item, target) => `That combination belongs on nobody’s list—not even Kiss’s. ${actor} quietly withdraws it.`,
+  (actor, item, target) => `The ${item} cannot solve the ${target}. Joe Timmins immediately invoices ${actor} for consulting.`,
+  (actor, item, target) => `For one hopeful second, the ${item} almost makes sense here. Then ${actor}’s second ends.`,
 ];
 
 const useHotspotQuips = [
-  (target) => `Oates attempts to use the ${target}, but cannot locate its business end.`,
-  (target) => `The ${target} appears to require an item, an idea, or a less exhausting profession.`,
-  (target) => `Oates gives the ${target} an encouraging tap. It remains professionally indifferent.`,
-  (target) => `Using the ${target} bare-handed would void at least three warranties and one friendship.`,
-  (target) => `The ${target} is waiting for something specific. Unfortunately, it refuses to say what.`,
+  (actor, target) => `${actor} attempts to use the ${target}, but cannot locate its business end.`,
+  (actor, target) => `The ${target} appears to require an item, an idea, or a less exhausting profession than ${actor}’s.`,
+  (actor, target) => `${actor} gives the ${target} an encouraging tap. It remains professionally indifferent.`,
+  (actor, target) => `${actor} using the ${target} bare-handed would void three warranties and one friendship.`,
+  (actor, target) => `The ${target} is waiting for something specific. It refuses to tell ${actor} what.`,
 ];
 
 function randomQuip(quips, ...values) {
   return quips[Math.floor(Math.random() * quips.length)](...values);
 }
 
-export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
-  const state = createState();
+function actorName(characterId) {
+  return ({
+    'john-oates': 'John',
+    'daryl-hall': 'Daryl',
+    'michael-mcdonald': 'Michael',
+  })[characterId] || 'The mover';
+}
+
+export function createGame({ root, campaigns, chapters, defaultCampaignId = 'original', onReturnHome, onChapterStart, onCampaignChange }) {
+  const availableCampaigns = campaigns || {
+    [defaultCampaignId]: {
+      id: defaultCampaignId,
+      chapters,
+      initialCharacterId: 'john-oates',
+      initialInventory: [{ id: 'emptyTapeRoll', label: 'empty tape roll', icon: 'tape' }],
+    },
+  };
+  let campaign = availableCampaigns[defaultCampaignId] || Object.values(availableCampaigns)[0];
+  let campaignChapters = campaign.chapters;
+  const state = createState(campaign);
+  const saves = createSaveStore();
   const audio = createAudio();
-  const ui = createUI(root, { onVerb: selectVerb, onItem: selectItem });
+  const ui = createUI(root, {
+    onVerb: selectVerb,
+    onItem: selectItem,
+    onCharacter: switchCharacter,
+    onTrunkItem: retrieveFromTrunk,
+    onTrunkDeposit: depositIntoTrunk,
+  });
   const renderer = createRenderer(root, { onHotspot: interact });
   let chapter;
   let failedActions = 0;
+
+  // Preserve the state object reference used by the UI, while removing stale
+  // flags, cross-era inventories and debug markers from a previous run.
+  function resetState(nextCampaign) {
+    Object.keys(state).forEach((key) => { delete state[key]; });
+    Object.assign(state, createState(nextCampaign));
+  }
 
   function resetFailures() {
     failedActions = 0;
   }
 
   function returnHome() {
-    Object.assign(state, createState());
+    if (state.flags.adultGameComplete) saves.clear(campaign.id);
+    resetState(campaign);
     chapter = undefined;
     resetFailures();
     audio.stopBackground();
@@ -104,10 +107,15 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
   }
 
   function start(chapterId, sceneId, { showIntro = true } = {}) {
-    chapter = chapters[chapterId];
+    chapter = campaignChapters[chapterId];
     if (!chapter) throw new Error(`Unknown chapter: ${chapterId}`);
-    onChapterStart?.(chapterId);
+    onChapterStart?.(chapterId, campaign);
     state.chapterId = chapterId;
+    state.availableCharacters = chapter.playableCharacters || [{
+      id: chapter.playerId || campaign.initialCharacterId || 'john-oates',
+      label: chapter.playerLabel || 'JOHN',
+      year: chapter.year || '',
+    }];
     resetFailures();
     ui.setChapter(chapter.title);
     audio.startChapter(chapterId);
@@ -115,9 +123,17 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
   }
 
   function debugStart(chapterId) {
-    if (!chapters[chapterId]) throw new Error(`Unknown debug chapter: ${chapterId}`);
-    state.inventory = [...(debugLoadouts[chapterId] || [])];
-    state.flags = {};
+    const targetCampaign = Object.values(availableCampaigns).find((entry) => entry.chapters[chapterId]);
+    if (!targetCampaign) throw new Error(`Unknown debug chapter: ${chapterId}`);
+    if (targetCampaign.id !== campaign.id) selectCampaign(targetCampaign.id);
+    else resetState(targetCampaign);
+    state.debugSession = true;
+    const setup = debugChapterStates[chapterId] || {};
+    replaceInventory([...(setup.inventory || debugLoadouts[chapterId] || [])]);
+    Object.entries(setup.inventories || {}).forEach(([owner, items]) => {
+      state.inventories[owner] = items.map((item) => ({ ...item }));
+    });
+    setup.flags?.forEach((flag) => { state.flags[flag] = true; });
     state.selectedVerb = 'look';
     state.selectedItem = null;
     start(chapterId, undefined, { showIntro: false });
@@ -127,6 +143,9 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
     const scene = chapter.scenes[sceneId];
     if (!scene) throw new Error(`Unknown scene: ${sceneId}`);
     state.sceneId = sceneId;
+    if (scene.playerId) activateCharacter(scene.playerId);
+    state.actorLocations[state.activeCharacterId] = sceneId;
+    if (!state.visitedScenes.includes(sceneId)) state.visitedScenes.push(sceneId);
     state.selectedItem = null;
     ui.clearCompletion();
     renderer.render(scene, state, state.selectedVerb);
@@ -141,6 +160,7 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
     };
     if (showIntro) ui.showSceneIntro(chapter.title, scene, enterScene);
     else enterScene();
+    if (!state.debugSession) saves.save(campaign.id, state);
   }
 
   function respond(text, hotspot) {
@@ -165,7 +185,7 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
       state.selectedItem = itemId;
       renderer.setVerb('use');
       ui.render(state);
-      ui.message(inventoryDetails[itemId] || `It is ${item.label}. You should probably keep it.`);
+      ui.message(itemDescriptions[itemId] || `It is ${item.label}. You should probably keep it.`);
       ui.clearSpeech();
       audio.click();
       return;
@@ -178,69 +198,92 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
     audio.click();
   }
 
+  function switchCharacter(characterId) {
+    const allowed = state.availableCharacters?.some((character) => character.id === characterId);
+    if (!allowed || characterId === state.activeCharacterId) return;
+    const destination = state.actorLocations[characterId] || chapter.characterScenes?.[characterId];
+    if (!destination) return;
+    activateCharacter(characterId);
+    loadScene(destination);
+  }
+
+  function retrieveFromTrunk(itemId) {
+    if (!state.flags.trunkPortalOpen) {
+      ui.message('The Maxima trunk route is not synchronized in this scene.');
+      registerFailure();
+      return;
+    }
+    const trunk = state.inventories.trunk || [];
+    const item = trunk.find((entry) => entry.id === itemId);
+    if (!item) return;
+    state.inventories.trunk = trunk.filter((entry) => entry.id !== itemId);
+    if (!state.inventory.some((entry) => entry.id === itemId)) state.inventory.push(item);
+    state.selectedItem = null;
+    ui.render(state);
+    ui.message(`${state.activeCharacterId === 'john-oates' ? 'John' : state.activeCharacterId === 'daryl-hall' ? 'Daryl' : 'Michael'} retrieves the ${item.label} from the Maxima’s temporal trunk.`);
+    audio.pickup();
+    if (!state.debugSession) saves.save(campaign.id, state);
+  }
+
+  function depositIntoTrunk(itemId) {
+    if (!state.flags.trunkPortalOpen) {
+      ui.message('The Maxima trunk route is not synchronized in this scene.');
+      registerFailure();
+      return;
+    }
+    const item = state.inventory.find((entry) => entry.id === itemId);
+    if (!item) return;
+    state.inventory = state.inventory.filter((entry) => entry.id !== itemId);
+    state.inventories[state.activeCharacterId] = state.inventory;
+    state.inventories.trunk ||= [];
+    if (!state.inventories.trunk.some((entry) => entry.id === itemId)) {
+      state.inventories.trunk.push(item);
+    }
+    state.selectedItem = null;
+    state.selectedVerb = 'look';
+    renderer.setVerb('look');
+    ui.render(state);
+    ui.clearSpeech();
+    ui.message(`${actorName(state.activeCharacterId)} returns the ${item.label} to the Maxima’s temporal trunk.`);
+    audio.pickup();
+    if (!state.debugSession) saves.save(campaign.id, state);
+  }
+
   function interact(hotspot) {
     const verb = state.selectedVerb || (state.selectedItem ? 'use' : 'look');
     const selectedItem = state.inventory.find((entry) => entry.id === state.selectedItem);
     const action = selectedItem ? hotspot.useWith?.[selectedItem.id] : hotspot.actions?.[verb];
 
+    if (!selectedItem && hotspot.exit && ['look', 'use'].includes(verb)) {
+      if (hotspot.exit.requires?.some((flag) => !state.flags[flag])) {
+        respond(hotspot.exit.missing || 'That route is not available yet.', hotspot);
+        registerFailure();
+        return;
+      }
+      loadScene(hotspot.exit.sceneId);
+      return;
+    }
+
     if (action) {
       if (action.requires?.some((flag) => !state.flags[flag])) {
-        respond(action.missing || 'That is not ready yet.', hotspot); registerFailure(); audio.error(); return;
+        const missingFlags = action.requires.filter((flag) => !state.flags[flag]);
+        const missingMessage = typeof action.missing === 'function'
+          ? action.missing(missingFlags, state)
+          : action.missing;
+        respond(missingMessage || 'That is not ready yet.', hotspot); registerFailure(); audio.error(); return;
       }
-      if (action.puzzle === 'crane') {
+      if (action.puzzle) {
         ui.clearSpeech();
         resetFailures();
         renderer.reactJohn('determined');
-        audio.crane();
-        ui.showCranePuzzle({
+        if (action.puzzle === 'crane') audio.crane();
+        ui.showPuzzle(action.puzzle, {
+          ...(action.puzzleData || {}),
           onMove: () => audio.click(),
-          onMiss: () => { registerFailure(); audio.error(); },
-          onWin: () => execute(action, hotspot),
-        });
-        return;
-      }
-      if (action.puzzle === 'wiffle') {
-        ui.clearSpeech();
-        resetFailures();
-        renderer.reactJohn('determined');
-        ui.showWifflePuzzle({
           onAdjust: () => audio.click(),
-          onLaunch: () => audio.effect('wiffle'),
-          onMiss: () => { registerFailure(); audio.error(); },
-          onWin: () => execute(action, hotspot),
-        });
-        return;
-      }
-      if (action.puzzle === 'voiceMixer') {
-        ui.clearSpeech();
-        resetFailures();
-        renderer.reactJohn('determined');
-        ui.showVoiceMixerPuzzle({
-          onAdjust: () => audio.click(),
-          onTest: () => audio.effect('voice'),
-          onMiss: () => { registerFailure(); audio.error(); },
-          onWin: () => execute(action, hotspot),
-        });
-        return;
-      }
-      if (action.puzzle === 'recallClause') {
-        ui.clearSpeech();
-        resetFailures();
-        renderer.reactJohn('determined');
-        ui.showRecallClausePuzzle({
-          onAdjust: () => audio.click(),
-          onTest: () => audio.effect('contract'),
-          onMiss: () => { registerFailure(); audio.error(); },
-          onWin: () => execute(action, hotspot),
-        });
-        return;
-      }
-      if (action.puzzle === 'storageDirectory') {
-        ui.clearSpeech();
-        resetFailures();
-        renderer.reactJohn('determined');
-        ui.showStorageDirectoryPuzzle({
           onInspect: () => audio.click(),
+          onLaunch: () => audio.effect('wiffle'),
+          onTest: () => audio.effect(action.effect || 'success'),
           onMiss: () => { registerFailure(); audio.error(); },
           onWin: () => execute(action, hotspot),
         });
@@ -268,7 +311,7 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
       return;
     }
     if (verb === 'use' && selectedItem) {
-      const response = randomQuip(useItemQuips, selectedItem.label, hotspot.label);
+      const response = randomQuip(useItemQuips, actorName(state.activeCharacterId), selectedItem.label, hotspot.label);
       respond(response, hotspot);
       registerFailure();
       audio.error();
@@ -281,9 +324,9 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
       return;
     }
     const fallback = verb === 'take'
-      ? randomQuip(takeQuips, hotspot.label)
+      ? randomQuip(takeQuips, actorName(state.activeCharacterId), hotspot.label)
       : verb === 'use'
-        ? randomQuip(useHotspotQuips, hotspot.label)
+        ? randomQuip(useHotspotQuips, actorName(state.activeCharacterId), hotspot.label)
         : `You can't ${verb} the ${hotspot.label}.`;
     respond(fallback, hotspot);
     registerFailure();
@@ -295,8 +338,14 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
     if (failedAction) registerFailure();
     else resetFailures();
     action.setFlags?.forEach((flag) => { state.flags[flag] = true; });
-    action.removeItems?.forEach((id) => { state.inventory = state.inventory.filter((item) => item.id !== id); });
+    action.removeItems?.forEach((id) => replaceInventory(state.inventory.filter((item) => item.id !== id)));
     action.give?.forEach((item) => { if (!state.inventory.some((entry) => entry.id === item.id)) state.inventory.push(item); });
+    Object.entries(action.giveTo || {}).forEach(([owner, items]) => {
+      state.inventories[owner] ||= [];
+      items.forEach((item) => {
+        if (!state.inventories[owner].some((entry) => entry.id === item.id)) state.inventories[owner].push(item);
+      });
+    });
     if (action.clearSelection) { state.selectedItem = null; state.selectedVerb = 'look'; }
     ui.render(state);
     renderer.render(chapter.scenes[state.sceneId], state, state.selectedVerb);
@@ -327,10 +376,59 @@ export function createGame({ root, chapters, onReturnHome, onChapterStart }) {
     } else {
       completeAction();
     }
+    if (action.goToScene) loadScene(action.goToScene);
+    else if (!state.debugSession) saves.save(campaign.id, state);
+  }
+
+  function replaceInventory(items) {
+    state.inventory = items;
+    state.inventories[state.activeCharacterId] = items;
+  }
+
+  function activateCharacter(characterId) {
+    state.activeCharacterId = characterId;
+    state.inventories[characterId] ||= [];
+    state.inventory = state.inventories[characterId];
+    state.selectedItem = null;
+    state.selectedVerb = 'look';
+  }
+
+  function selectCampaign(campaignId) {
+    const selected = availableCampaigns[campaignId];
+    if (!selected) throw new Error(`Unknown campaign: ${campaignId}`);
+    campaign = selected;
+    campaignChapters = selected.chapters;
+    chapter = undefined;
+    resetState(selected);
+    onCampaignChange?.(selected);
+    ui.setChapter('');
+    ui.clearCompletion();
+    ui.clearSpeech();
+    ui.render(state);
+    return selected;
+  }
+
+  function continueCampaign(campaignId) {
+    const selected = selectCampaign(campaignId);
+    const snapshot = saves.load(campaignId);
+    if (!snapshot?.chapterId || !selected.chapters[snapshot.chapterId]) return false;
+    Object.assign(state, snapshot);
+    campaignChapters = selected.chapters;
+    chapter = campaignChapters[state.chapterId];
+    state.inventory = state.inventories[state.activeCharacterId] || [];
+    ui.setChapter(chapter.title);
+    audio.startChapter(state.chapterId);
+    loadScene(state.sceneId, { showIntro: false });
+    return true;
   }
 
   return {
     start,
+    selectCampaign,
+    continueCampaign,
+    clearSave: (campaignId = campaign.id) => saves.clear(campaignId),
+    hasSave: (campaignId = campaign.id) => saves.has(campaignId),
+    activateCharacter,
     debugStart,
     loadScene,
     returnHome,

@@ -1,10 +1,14 @@
 import { mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { MUSIC_SLOTS } from '../src/game-data/audio/audio-manifest.js';
 
 const sampleRate = 22050;
 const duration = 24;
 const frames = sampleRate * duration;
-const output = 'assets/audio/music';
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const output = resolve(root, 'assets/audio/music');
 
 const cues = {
   'title-original': { bpm: 116, bass: [45, 45, 52, 49, 42, 42, 49, 52], lead: [69, 0, 72, 76, 74, 0, 71, 69] },
@@ -15,7 +19,25 @@ const cues = {
   'chapter-05-original': { bpm: 124, bass: [37, 44, 40, 42, 37, 44, 47, 42], lead: [64, 67, 71, 0, 69, 67, 64, 62] },
   'chapter-06-original': { bpm: 120, bass: [47, 54, 50, 52, 47, 54, 57, 52], lead: [74, 78, 81, 78, 76, 74, 71, 0] },
   'outro-original': { bpm: 94, bass: [40, 47, 45, 43, 40, 47, 50, 43], lead: [67, 71, 74, 0, 72, 71, 67, 64] },
+  'adult-01-original': { bpm: 118, bass: [42, 49, 45, 47, 38, 45, 49, 47], lead: [69, 72, 76, 74, 71, 0, 67, 69] },
+  'adult-02-original': { bpm: 132, bass: [40, 47, 43, 50, 40, 47, 45, 50], lead: [71, 74, 78, 0, 76, 74, 71, 69] },
+  'adult-03-original': { bpm: 106, bass: [45, 52, 49, 50, 45, 52, 54, 50], lead: [69, 73, 76, 73, 71, 69, 66, 0] },
+  'adult-04-original': { bpm: 121, bass: [38, 45, 41, 48, 38, 45, 43, 48], lead: [65, 68, 72, 75, 72, 68, 65, 63] },
+  'adult-05-original': { bpm: 114, bass: [37, 44, 40, 47, 37, 44, 42, 47], lead: [64, 71, 68, 76, 73, 71, 68, 0] },
+  'adult-06-original': { bpm: 128, bass: [43, 50, 46, 48, 43, 50, 53, 48], lead: [70, 74, 77, 0, 82, 77, 74, 70] },
+  'adult-07-original': { bpm: 124, bass: [40, 47, 43, 45, 38, 45, 47, 50], lead: [67, 71, 74, 79, 76, 74, 71, 67] },
+  'adult-outro-original': { bpm: 98, bass: [45, 52, 49, 47, 45, 52, 54, 49], lead: [69, 73, 76, 81, 78, 76, 73, 69] },
 };
+
+const cueSlots = Object.keys(cues).map((name) => name.replace(/-original$/, ''));
+const missingCues = MUSIC_SLOTS.filter((slot) => !cueSlots.includes(slot));
+const unexpectedCues = cueSlots.filter((slot) => !MUSIC_SLOTS.includes(slot));
+if (missingCues.length || unexpectedCues.length) {
+  throw new Error([
+    missingCues.length ? `Missing music cues: ${missingCues.join(', ')}` : '',
+    unexpectedCues.length ? `Unexpected music cues: ${unexpectedCues.join(', ')}` : '',
+  ].filter(Boolean).join('\n'));
+}
 
 function midi(note) {
   return 440 * 2 ** ((note - 69) / 12);

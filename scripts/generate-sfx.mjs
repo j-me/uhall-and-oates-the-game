@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { SFX_PATHS } from '../src/game-data/audio/audio-manifest.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const output = resolve(root, 'assets/audio/sfx');
@@ -95,6 +96,17 @@ const effects = {
   'contract-shred': [0.7, (b) => { noise(b, 0, .58, .24, 1); tone(b, .32, .29, 280, 820, .18, 'triangle'); }],
   'tape-rip': [0.62, (b) => { noise(b, 0, .48, .2, 1); tone(b, .04, .42, 230, 510, .11, 'square'); tone(b, .45, .12, 140, 75, .25, 'sine'); }],
 };
+
+const expectedEffects = Object.values(SFX_PATHS)
+  .map((path) => path.split('/').pop().replace(/\.wav$/, ''));
+const missingEffects = expectedEffects.filter((name) => !effects[name]);
+const unexpectedEffects = Object.keys(effects).filter((name) => !expectedEffects.includes(name));
+if (missingEffects.length || unexpectedEffects.length) {
+  throw new Error([
+    missingEffects.length ? `Missing SFX generators: ${missingEffects.join(', ')}` : '',
+    unexpectedEffects.length ? `Unexpected SFX generators: ${unexpectedEffects.join(', ')}` : '',
+  ].filter(Boolean).join('\n'));
+}
 
 for (const [name, [duration, draw]] of Object.entries(effects)) {
   const samples = make(duration);

@@ -1,3 +1,5 @@
+import { SFX_PATHS, musicSources as getMusicSources } from '../game-data/audio/audio-manifest.js';
+
 export function createAudio() {
   let enabled = true;
   let context;
@@ -9,29 +11,8 @@ export function createAudio() {
   let activeChapter;
   let musicMode = 'external';
   let externalTracks = {};
-  const musicSources = new Set();
+  const proceduralMusicSources = new Set();
   const activeSfx = new Set();
-  const sfxPaths = {
-    pickup: 'assets/audio/sfx/pickup.wav',
-    success: 'assets/audio/sfx/success-chime.wav',
-    crane: 'assets/audio/sfx/crane-motor.wav',
-    repair: 'assets/audio/sfx/repair-ratchet.wav',
-    fries: 'assets/audio/sfx/prize-drop.wav',
-    gull: 'assets/audio/sfx/gull-squawk.wav',
-    manifest: 'assets/audio/sfx/paper-rustle.wav',
-    stamp: 'assets/audio/sfx/stamp-thunk.wav',
-    cards: 'assets/audio/sfx/cards-rip.wav',
-    scoreboard: 'assets/audio/sfx/scoreboard-beeps.wav',
-    wiffle: 'assets/audio/sfx/wiffle-launch.wav',
-    customs: 'assets/audio/sfx/customs-clack.wav',
-    route: 'assets/audio/sfx/route-whoosh.wav',
-    lift: 'assets/audio/sfx/lift-unlock.wav',
-    capsules: 'assets/audio/sfx/capsule-rotate.wav',
-    voice: 'assets/audio/sfx/voice-glitch.wav',
-    broadcast: 'assets/audio/sfx/broadcast-surge.wav',
-    contract: 'assets/audio/sfx/contract-shred.wav',
-    tape: 'assets/audio/sfx/tape-rip.wav',
-  };
 
   function getContext() {
     if (!context) context = new AudioContext();
@@ -50,8 +31,8 @@ export function createAudio() {
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + duration);
     osc.connect(gain).connect(ctx.destination);
     if (bus === 'music') {
-      musicSources.add(osc);
-      osc.addEventListener('ended', () => musicSources.delete(osc), { once: true });
+      proceduralMusicSources.add(osc);
+      osc.addEventListener('ended', () => proceduralMusicSources.delete(osc), { once: true });
     }
     osc.start(ctx.currentTime + delay); osc.stop(ctx.currentTime + delay + duration + 0.03);
   }
@@ -65,8 +46,8 @@ export function createAudio() {
     const noise = ctx.createBufferSource(); const gain = ctx.createGain();
     gain.gain.value = volume; noise.buffer = buffer; noise.connect(gain).connect(ctx.destination);
     if (bus === 'music') {
-      musicSources.add(noise);
-      noise.addEventListener('ended', () => musicSources.delete(noise), { once: true });
+      proceduralMusicSources.add(noise);
+      noise.addEventListener('ended', () => proceduralMusicSources.delete(noise), { once: true });
     }
     noise.start(ctx.currentTime + delay);
   }
@@ -105,8 +86,8 @@ export function createAudio() {
   }
 
   function stopMusicSources() {
-    musicSources.forEach((source) => { try { source.stop(); } catch { /* Already stopped. */ } });
-    musicSources.clear();
+    proceduralMusicSources.forEach((source) => { try { source.stop(); } catch { /* Already stopped. */ } });
+    proceduralMusicSources.clear();
   }
 
   function stopSfx() {
@@ -119,7 +100,7 @@ export function createAudio() {
 
   function playSfx(name, fallback, volume = 0.52) {
     if (!enabled) return;
-    const path = sfxPaths[name];
+    const path = SFX_PATHS[name];
     if (!path || typeof Audio === 'undefined') {
       fallback();
       return;
@@ -191,15 +172,7 @@ export function createAudio() {
     if (!enabled || activeChapter === chapterId) return;
     activeChapter = chapterId;
     stopScore(); stopChapterTrack(); stopAmbience(); stopMusicSources();
-    const sources = {
-      'chapter-01': { local: 'assets/audio/music-local/chapter-01.mp3', original: 'assets/audio/music/chapter-01-original.mp3' },
-      'chapter-02': { local: 'assets/audio/music-local/chapter-02.mp3', original: 'assets/audio/music/chapter-02-original.mp3' },
-      'chapter-03': { local: 'assets/audio/music-local/chapter-03.mp3', original: 'assets/audio/music/chapter-03-original.mp3' },
-      'chapter-04': { local: 'assets/audio/music-local/chapter-04.mp3', original: 'assets/audio/music/chapter-04-original.mp3' },
-      'chapter-05': { local: 'assets/audio/music-local/chapter-05.mp3', original: 'assets/audio/music/chapter-05-original.mp3' },
-      'chapter-06': { local: 'assets/audio/music-local/chapter-06.mp3', original: 'assets/audio/music/chapter-06-original.mp3' },
-      outro: { local: 'assets/audio/music-local/outro.mp3', original: 'assets/audio/music/outro-original.mp3' },
-    }[chapterId];
+    const sources = chapterId ? getMusicSources(chapterId) : null;
     if (sources) {
       const candidates = musicMode === 'original'
         ? [sources.original]
@@ -229,6 +202,9 @@ export function createAudio() {
       gull: () => { tone(1040, 0.09, 'sine', 0.015); tone(1320, 0.12, 'sine', 0.012, 0.1); hiss(0.09, 0.01); },
       manifest: () => { hiss(0.11, 0.015); tone(720, 0.08, 'triangle', 0.025, 0.07); tone(960, 0.12, 'triangle', 0.025, 0.17); },
       stamp: () => { tone(94, 0.07, 'square', 0.05); hiss(0.05, 0.02, 0.025); tone(512, 0.08, 'triangle', 0.025, 0.12); },
+      unit: () => sounds.stamp(),
+      certified: () => sounds.stamp(),
+      auction: () => sounds.stamp(),
       cards: () => { hiss(0.13, 0.025); tone(590, 0.055, 'triangle', 0.024, 0.06); tone(780, 0.085, 'triangle', 0.026, 0.13); },
       scoreboard: () => { tone(430, 0.06, 'square', 0.03); tone(620, 0.06, 'square', 0.03, 0.08); tone(930, 0.12, 'square', 0.025, 0.17); },
       wiffle: () => { tone(140, 0.11, 'triangle', 0.04); tone(540, 0.065, 'sine', 0.03, 0.1); tone(920, 0.075, 'sine', 0.026, 0.18); },

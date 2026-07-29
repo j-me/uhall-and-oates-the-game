@@ -1,19 +1,19 @@
+import { musicSources } from '../game-data/audio/audio-manifest.js';
+
 const imagePattern = /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i;
 const audioPattern = /\.(?:m4a|mp3|ogg|wav)(?:[?#].*)?$/i;
 
 const supplementalAssets = {
   'chapter-01': [
-    'assets/art/chapters/chapter-01/crane-cabinet-interior-v2.png',
-    'assets/art/chapters/chapter-01/crane-claw-v1.png',
-    'assets/art/chapters/chapter-01/crane-fries-v1.png',
+    'assets/art/campaigns/original/chapters/chapter-01/crane-cabinet-interior-v2.png',
+    'assets/art/campaigns/original/chapters/chapter-01/crane-claw-v1.png',
+    'assets/art/campaigns/original/chapters/chapter-01/crane-fries-v1.png',
   ],
   'chapter-03': [
-    'assets/art/chapters/chapter-03/jacuzzi-wiffle-launcher-field-v1.png',
-    'assets/art/chapters/chapter-03/wiffle-ball-v1.png',
+    'assets/art/campaigns/original/chapters/chapter-03/jacuzzi-wiffle-launcher-field-v1.png',
+    'assets/art/campaigns/original/chapters/chapter-03/wiffle-ball-v1.png',
   ],
 };
-
-const chapterOrder = ['chapter-01', 'chapter-02', 'chapter-03', 'chapter-04', 'chapter-05', 'chapter-06', 'outro'];
 
 function collectAssetPaths(value, assets = new Set(), visited = new WeakSet()) {
   if (typeof value === 'string') {
@@ -60,17 +60,20 @@ function preloadAudio(src, retainedAudio) {
   });
 }
 
-export function createAssetPreloader(chapters) {
+export function createAssetPreloader(campaigns) {
   const pending = new Map();
   const retainedAudio = new Set();
+  const campaignList = Object.values(campaigns);
+  const chapterRegistry = Object.fromEntries(campaignList.flatMap((campaign) => Object.entries(campaign.chapters)));
+  const chapterOrder = campaignList.flatMap((campaign) => campaign.chapterOrder);
 
   function preloadChapter(chapterId) {
     if (pending.has(chapterId)) return pending.get(chapterId);
-    const chapter = chapters[chapterId];
+    const chapter = chapterRegistry[chapterId];
     if (!chapter) return Promise.resolve();
     const assets = collectAssetPaths(chapter);
     (supplementalAssets[chapterId] || []).forEach((src) => assets.add(src));
-    assets.add(`assets/audio/music/${chapterId}-original.mp3`);
+    assets.add(musicSources(chapterId).original);
 
     const request = Promise.allSettled([...assets].map((src) =>
       imagePattern.test(src) ? preloadImage(src) : preloadAudio(src, retainedAudio)

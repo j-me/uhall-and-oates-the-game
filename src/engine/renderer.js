@@ -92,7 +92,7 @@ export function createRenderer(root, { onHotspot }) {
     marker.setAttribute('aria-hidden', 'true');
     marker.textContent = ({
       repair: '⚙', fries: '🍟', gull: '🕊', manifest: '▧', pickup: '✦', success: '✦', tape: '∅',
-      stamp: '16-B', cards: '▤', scoreboard: '1·6·B', wiffle: '●', customs: 'RELEASED',
+      unit: '16-B', certified: 'CERTIFIED', auction: 'SOLD!', cards: '▤', scoreboard: '1·6·B', wiffle: '●', customs: 'RELEASED',
       route: '✈', lift: '↕', capsules: '↻', voice: '♫', broadcast: ')))', contract: '▧',
     })[effect] || '✦';
     marker.style.left = `${hotspot.bounds.left + hotspot.bounds.width / 2}%`;

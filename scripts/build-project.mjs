@@ -213,7 +213,7 @@ const reduction = Math.round((1 - codeAfter / codeBefore) * 100);
 
 console.log(`Build complete: ${relative(projectRoot, outputDirectory)}/ (${summary.files} files, ${sizeInMegabytes} MB)`);
 console.log(`Bundled code: ${(codeBefore / 1024).toFixed(1)} KB → ${(codeAfter / 1024).toFixed(1)} KB (${reduction}% smaller)`);
-console.log('JavaScript: 38 modules → assets/app.min.js');
+console.log(`JavaScript: ${walkFiles(join(projectRoot, 'src')).filter((path) => path.endsWith('.js')).length} modules → assets/app.min.js`);
 console.log('Styles: src/styles/main.css → assets/app.min.css');
 console.log(`Images: ${artPngFiles.length} PNGs → ${imageReferences.size} WebP files (${(imageBytesBefore / 1024 / 1024).toFixed(1)} MB → ${(imageBytesAfter / 1024 / 1024).toFixed(1)} MB)`);
 console.log(`Target URL: ${packageJson.homepage}`);

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { chapters } from '../src/game-data/registry.js';
+import { debugLoadouts } from '../src/game-data/debug/debug-loadouts.js';
 
 const state = { inventory: new Map([['emptyTapeRoll', { id: 'emptyTapeRoll' }]]), flags: {} };
 
@@ -115,6 +116,15 @@ for (const chapter of Object.values(chapters)) {
       assert(left >= 0 && top >= 0 && width > 0 && height > 0 && left + width <= 100 && top + height <= 100, `Invalid hit zone: ${entry.id}`);
     }
   }
+}
+
+// Every original-campaign debug start must remain completable if the tester
+// continues all the way through the epilogue.
+for (const chapterId of ['chapter-01', 'chapter-02', 'chapter-03', 'chapter-04', 'chapter-05', 'chapter-06', 'outro']) {
+  assert(
+    debugLoadouts[chapterId]?.some((entry) => entry.id === 'emptyTapeRoll'),
+    `${chapterId} debug start must preserve the tape roll required by the epilogue`,
+  );
 }
 
 console.log(`Campaign solvability check passed: 6 chapters plus epilogue, ${state.inventory.size} final inventory entries.`);

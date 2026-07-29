@@ -1,19 +1,13 @@
+import { MUSIC_SLOTS } from '../game-data/audio/audio-manifest.js';
+
 const STORAGE_KEY = 'uhall-oates-settings-v1';
+const emptyExternalUrls = () => Object.fromEntries(MUSIC_SLOTS.map((slot) => [slot, '']));
 
 const defaults = {
   soundEnabled: true,
   musicMode: 'external',
   debugEnabled: false,
-  externalUrls: {
-    title: '',
-    'chapter-01': '',
-    'chapter-02': '',
-    'chapter-03': '',
-    'chapter-04': '',
-    'chapter-05': '',
-    'chapter-06': '',
-    outro: '',
-  },
+  externalUrls: emptyExternalUrls(),
 };
 
 function normalizeSettings(input = {}) {
