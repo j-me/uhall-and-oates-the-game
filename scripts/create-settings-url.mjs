@@ -17,10 +17,11 @@ const base64Url = Buffer.from(json, 'utf8').toString('base64')
   .replace(/\//g, '_')
   .replace(/=+$/, '');
 const encodedSettings = format === 'base64' ? base64Url : encodeURIComponent(json);
+const cacheBust = Date.now();
 
 if (!['json', 'base64'].includes(format)) {
   console.error('Format must be “json” or “base64”.');
   process.exit(1);
 }
 
-console.log(`${pageUrl}${separator}settings=${encodedSettings}`);
+console.log(`${pageUrl}${separator}settings=${encodedSettings}&resetStorage=1&t=${cacheBust}`);

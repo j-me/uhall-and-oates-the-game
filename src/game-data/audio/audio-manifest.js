@@ -46,10 +46,16 @@ export const SFX_PATHS = Object.freeze({
   tape: 'assets/audio/sfx/tape-rip.wav',
 });
 
+// Source-tree development may use ignored local recordings. Production builds
+// replace this flag with false because music-local is deliberately not shipped.
+const LOCAL_MUSIC_DIRECTORY = typeof __UHALL_LOCAL_MUSIC_DIRECTORY__ === 'undefined'
+  ? 'assets/audio/music-local'
+  : __UHALL_LOCAL_MUSIC_DIRECTORY__;
+
 export function musicSources(slot) {
   if (!MUSIC_SLOTS.includes(slot)) throw new Error(`Unknown music slot: ${slot}`);
   return {
-    local: `assets/audio/music-local/${slot}.mp3`,
+    local: LOCAL_MUSIC_DIRECTORY ? `${LOCAL_MUSIC_DIRECTORY}/${slot}.mp3` : null,
     original: `assets/audio/music/${slot}-original.mp3`,
   };
 }

@@ -66,7 +66,7 @@ Critical chain: `filingNumber + five evidence flags → handbookContradictions p
 
 ### Epilogue
 
-The restored 1993 depot contains Joe’s revised anniversary handbook. Taking it completes the campaign and reveals a shipping label dated 2008.
+The restored 1993 depot contains Joe’s revised anniversary handbook. When John reaches for the loose shipping label dated 2008, a final time draft pulls it into the rift. The cassette-powered Uhall truck sprouts moving-blanket wings for a short, retry-safe arcade run through six eras of sofas, forms, pagers, dot-com furniture, mystery boxes, and Joe’s prohibition on overtime. Catching the label completes the campaign and opens the route to the final campaign.
 
 ## Engine-facing content model
 
@@ -87,4 +87,4 @@ Campaign state stores the campaign/chapter/scene, active actor and actor locatio
 
 ## Art and audio
 
-The campaign uses eight 1536×1024 hand-painted cartoon backgrounds, three new transparent character sprites, and the returning cast’s existing sprites. Repository-safe MP3 cues use `adult-01-original.mp3` through `adult-07-original.mp3` plus `adult-outro-original.mp3`. Optional local or external commercial music remains user-configured and is never included in production builds.
+The campaign uses eight 1536×1024 hand-painted cartoon backgrounds, three new transparent character sprites, the returning cast’s existing sprites, and a dedicated transparent flying-truck minigame asset. Repository-safe MP3 cues use `adult-01-original.mp3` through `adult-07-original.mp3` plus `adult-outro-original.mp3`. Optional local or external commercial music remains user-configured and is never included in production builds.

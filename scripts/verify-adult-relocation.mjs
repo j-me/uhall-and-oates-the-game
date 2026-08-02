@@ -127,6 +127,8 @@ assert.equal(action.next.chapterId, 'adult-outro');
 
 current = scene('adult-outro');
 action = apply(hotspot(current, 'revised-handbook').actions.take);
+assert.equal(action.puzzle, 'temporalTruck');
+assert.equal(action.give[0].icon, 'final-label-2008');
 assert(action.complete);
 assert(state.flags.adultGameComplete);
 

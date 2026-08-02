@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uhall-oates-v43';
+const CACHE_NAME = 'uhall-oates-v46';
 const APP_SHELL = [
   './',
   './index.html',
@@ -21,6 +21,7 @@ const APP_SHELL = [
   './src/game-data/puzzles/registry.js',
   './src/game-data/puzzles/shared/shared-puzzle-overlay.js',
   './src/game-data/puzzles/shared/shared-puzzle-logic-console.js',
+  './src/game-data/puzzles/adult-relocation/adult-puzzle-temporal-truck.js',
   './src/game-data/puzzles/finale/final-puzzle-rhythm-rehearsal.js',
   './src/game-data/puzzles/original/original-puzzle-crane.js',
   './src/game-data/puzzles/original/original-puzzle-wiffle.js',
@@ -132,6 +133,7 @@ const APP_SHELL = [
   './assets/art/campaigns/adult-relocation/chapters/adult-06/time-call-v1.png',
   './assets/art/campaigns/adult-relocation/chapters/adult-07/fractured-warehouse-v1.png',
   './assets/art/campaigns/adult-relocation/chapters/adult-outro/restored-depot-v1.png',
+  './assets/art/campaigns/adult-relocation/minigames/temporal-truck-v1.png',
   './assets/art/campaigns/adult-relocation/reveals/adult-01-maxima-trunk-v1.png',
   './assets/art/campaigns/adult-relocation/reveals/adult-02-danger-zone-v1.png',
   './assets/art/campaigns/adult-relocation/reveals/adult-03-mall-v1.png',

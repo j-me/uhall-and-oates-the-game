@@ -53,14 +53,31 @@ function parseSettingsParameter(value) {
   }
 }
 
+function clearGameStorage() {
+  try {
+    const gameKeys = [];
+    for (let index = 0; index < localStorage.length; index += 1) {
+      const key = localStorage.key(index);
+      if (key?.startsWith('uhall-oates-')) gameKeys.push(key);
+    }
+    gameKeys.forEach((key) => localStorage.removeItem(key));
+  } catch {
+    // Storage may be disabled; settings still fall back safely below.
+  }
+}
+
 function loadSettings() {
-  const suppliedSettings = new URLSearchParams(window.location.search).get('settings');
+  const query = new URLSearchParams(window.location.search);
+  const suppliedSettings = query.get('settings');
+  const shouldResetStorage = query.get('resetStorage') === '1';
+  if (shouldResetStorage) clearGameStorage();
   if (suppliedSettings === null) return loadSavedSettings();
   try {
     const settings = normalizeSettings(parseSettingsParameter(suppliedSettings));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
     const cleanUrl = new URL(window.location.href);
     cleanUrl.searchParams.delete('settings');
+    cleanUrl.searchParams.delete('resetStorage');
     window.history.replaceState(null, '', `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
     return settings;
   } catch {

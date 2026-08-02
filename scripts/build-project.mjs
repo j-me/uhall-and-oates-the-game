@@ -117,12 +117,18 @@ esbuild.buildSync({
   treeShaking: true,
   legalComments: 'none',
   sourcemap: false,
+  define: {
+    __UHALL_LOCAL_MUSIC_DIRECTORY__: 'null',
+  },
 });
 const bundledJavaScriptPath = join(assetsDirectory, 'app.min.js');
 writeFileSync(
   bundledJavaScriptPath,
   rewriteImageReferences(readFileSync(bundledJavaScriptPath, 'utf8')),
 );
+if (readFileSync(bundledJavaScriptPath, 'utf8').includes('assets/audio/music-local/')) {
+  throw new Error('Production JavaScript must not request excluded music-local files.');
+}
 
 const sourceCss = readFileSync(join(projectRoot, 'src', 'styles', 'main.css'), 'utf8')
   .replaceAll('../../assets/', './');

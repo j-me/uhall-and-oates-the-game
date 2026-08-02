@@ -24,7 +24,7 @@ npm run build
 
 The build bundles and tree-shakes the complete JavaScript module graph into one minified file, minifies CSS and HTML, rewrites production references, minifies the service worker and manifest, and converts art PNGs to high-quality WebP when that produces a smaller file. Alpha quality is retained, installation icons remain PNG, and all HTML/CSS/JavaScript/service-worker image references are rewritten automatically. It also copies runtime media, adds `.nojekyll` for GitHub Pages, verifies every service-worker app-shell path, and prints code and image size results plus the production target URL.
 
-Image optimization uses `cwebp` when available and falls back to ImageMagick. The build deliberately excludes source modules, `settings.local.json`, and `assets/audio/music-local/`.
+Image optimization uses `cwebp` when available and falls back to ImageMagick. The build deliberately excludes source modules, `settings.local.json`, and `assets/audio/music-local/`. Production JavaScript also omits local-file fallback URLs, preventing expected-but-noisy 404 requests for files that cannot be deployed.
 
 ## Install on iPhone or iPad
 
@@ -46,7 +46,8 @@ Download every configured local track with `npm run download:music`, or only the
 
 The in-game **Settings** menu controls the soundtrack:
 
-- **External** tries a saved per-song URL first, then the matching `music-local/` file, and finally the repository-safe original cue.
+- **External**, when serving the source project locally, tries a saved per-song URL first, then the matching `music-local/` file, and finally the repository-safe original cue.
+- **External**, in `npm run build` output, tries the saved URL and then the repository-safe original cue. The private `music-local/` directory is neither deployed nor requested.
 - **Original** always uses the original synth cues in `assets/audio/music/`.
 - **Debug Mode** reveals chapter selection and hotspot outlines. It does not change the selected soundtrack.
 
@@ -84,10 +85,10 @@ npm run settings:url:base64
 That prints:
 
 ```text
-https://j-me.github.io/uhall-and-oates-the-game/?settings=[base64settings]
+https://j-me.github.io/uhall-and-oates-the-game/?settings=[base64settings]&resetStorage=1&t=[timestamp]
 ```
 
-The JSON command prints an `index.html?settings=...` URL for local use. You can also provide any hosted page address as the second argument:
+Both commands add `resetStorage=1`, which clears this game’s saved settings, campaign saves, and completion progress before applying the supplied settings. They also append a millisecond `t` timestamp so each generated link bypasses stale browser, CDN, and service-worker URL caches. Both control parameters are consumed once; the reset flag and settings payload are then removed from the address bar. The JSON command prints an `index.html?settings=...&resetStorage=1&t=...` URL for local use. You can also provide any hosted page address as the second argument:
 
 ```sh
 node scripts/create-settings-url.mjs settings.local.json https://example.com/uhall-and-oates/

@@ -15,7 +15,8 @@ const continueSequel = document.getElementById('continue-sequel');
 const startFinale = document.getElementById('start-finale');
 const continueFinale = document.getElementById('continue-finale');
 const titleMusic = document.getElementById('title-music');
-let titleFallbackAttempted = false;
+let titleMusicCandidates = [];
+let titleMusicCandidate = 0;
 let settings;
 const preloader = createAssetPreloader(campaigns);
 const originalCrawl = openingCrawlCopy.innerHTML;
@@ -41,6 +42,16 @@ function startTitleMusic() {
 function stopTitleMusic() {
   titleMusic.pause();
   titleMusic.currentTime = 0;
+}
+
+function configureTitleMusic(candidates) {
+  titleMusicCandidates = [...new Set(candidates.filter(Boolean))];
+  titleMusicCandidate = 0;
+  const source = titleMusicCandidates[titleMusicCandidate];
+  if (source && titleMusic.getAttribute('src') !== source) {
+    titleMusic.src = source;
+    titleMusic.load();
+  }
 }
 
 function campaignIsUnlocked(campaignId) {
@@ -147,9 +158,9 @@ startTitleMusic();
 window.addEventListener('load', startTitleMusic, { once: true });
 titleMusic.addEventListener('canplaythrough', startTitleMusic, { once: true });
 titleMusic.addEventListener('error', () => {
-  const fallback = titleMusic.dataset.fallbackSrc;
-  if (titleFallbackAttempted || titleMusic.getAttribute('src') === fallback) return;
-  titleFallbackAttempted = true;
+  titleMusicCandidate += 1;
+  const fallback = titleMusicCandidates[titleMusicCandidate];
+  if (!fallback) return;
   titleMusic.src = fallback;
   titleMusic.load();
   startTitleMusic();
@@ -164,14 +175,9 @@ settings = createSettings({
     gameRoot.classList.toggle('debug-mode', values.debugEnabled);
     updateCampaignLocks();
     const titleSources = musicSources('title');
-    const titleSource = values.musicMode === 'original'
-      ? titleSources.original
-      : values.externalUrls.title || titleSources.local;
-    if (titleMusic.getAttribute('src') !== titleSource) {
-      titleFallbackAttempted = false;
-      titleMusic.src = titleSource;
-      titleMusic.load();
-    }
+    configureTitleMusic(values.musicMode === 'original'
+      ? [titleSources.original]
+      : [values.externalUrls.title, titleSources.local, titleSources.original]);
     if (values.soundEnabled) startTitleMusic();
     else stopTitleMusic();
   },
