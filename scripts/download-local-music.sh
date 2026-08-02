@@ -4,6 +4,7 @@ set -euo pipefail
 
 project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 settings_file="${1:-${project_dir}/settings.local.json}"
+slot_prefix="${2:-}"
 music_dir="${project_dir}/assets/audio/music-local"
 
 if [[ ! -f "${settings_file}" ]]; then
@@ -16,13 +17,14 @@ mkdir -p "${music_dir}"
 node -e '
   const fs = require("fs");
   const settingsPath = process.argv[1];
+  const prefix = process.argv[2] || "";
   const settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
 
   const entries = Object.entries(settings.externalUrls ?? {})
-    .filter(([, url]) => typeof url === "string" && url.trim());
+    .filter(([slot, url]) => slot.startsWith(prefix) && typeof url === "string" && url.trim());
 
   if (!entries.length) {
-    throw new Error("settings.local.json contains no external music URLs.");
+    throw new Error(`settings.local.json contains no external music URLs matching prefix: ${prefix || "(all)"}`);
   }
 
   for (const [slot, url] of entries) {
@@ -31,7 +33,7 @@ node -e '
     }
     process.stdout.write(`${slot}\t${url.trim()}\n`);
   }
-' "${settings_file}" |
+' "${settings_file}" "${slot_prefix}" |
   while IFS=$'\t' read -r slot url; do
     target="${music_dir}/${slot}.mp3"
     temporary="${target}.download"

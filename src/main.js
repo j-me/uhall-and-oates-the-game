@@ -10,7 +10,10 @@ const introScreen = document.getElementById('intro-screen');
 const introNext = document.getElementById('intro-next');
 const openingCrawlCopy = document.getElementById('opening-crawl-copy');
 const startSequel = document.getElementById('start-sequel');
+const continueOriginal = document.getElementById('continue-original');
 const continueSequel = document.getElementById('continue-sequel');
+const startFinale = document.getElementById('start-finale');
+const continueFinale = document.getElementById('continue-finale');
 const titleMusic = document.getElementById('title-music');
 let titleFallbackAttempted = false;
 let settings;
@@ -40,11 +43,44 @@ function stopTitleMusic() {
   titleMusic.currentTime = 0;
 }
 
+function campaignIsUnlocked(campaignId) {
+  if (settings?.values.debugEnabled) return true;
+  const requirement = campaigns[campaignId]?.requiresCampaign;
+  return !requirement || game.isCampaignComplete(requirement);
+}
+
+function updateCampaignLocks() {
+  const sequelUnlocked = campaignIsUnlocked('adult-relocation');
+  const finaleUnlocked = campaignIsUnlocked('finale');
+  const sequelComplete = game.isCampaignComplete('adult-relocation');
+  const finaleComplete = game.isCampaignComplete('finale');
+  continueOriginal.classList.toggle('is-hidden', game.isCampaignComplete('original') || !game.hasSave('original'));
+  [startSequel, continueSequel].forEach((button) => {
+    button.disabled = !sequelUnlocked;
+    button.title = sequelUnlocked ? '' : 'Complete The Original Game to unlock Adult Relocation';
+  });
+  [startFinale, continueFinale].forEach((button) => {
+    button.disabled = !finaleUnlocked;
+    button.title = finaleUnlocked ? '' : 'Complete Adult Relocation to unlock The Sound of Moving On';
+  });
+  startSequel.textContent = sequelUnlocked ? 'PLAY ADULT RELOCATION' : '🔒 LOCKED';
+  startFinale.textContent = finaleUnlocked ? 'PLAY THE SOUND OF MOVING ON' : '🔒 LOCKED';
+  continueSequel.classList.toggle('is-hidden', sequelComplete || !game.hasSave('adult-relocation'));
+  continueFinale.classList.toggle('is-hidden', finaleComplete || !game.hasSave('finale'));
+}
+
+function continueSavedCampaign(campaignId) {
+  stopTitleMusic();
+  titleScreen.classList.add('is-hidden');
+  introScreen.classList.add('is-hidden');
+  if (!game.continueCampaign(campaignId)) showHomeScreen();
+}
+
 function showHomeScreen() {
   introScreen.classList.add('is-hidden');
   titleScreen.classList.remove('is-hidden');
   gameRoot.classList.toggle('debug-mode', settings.values.debugEnabled);
-  continueSequel.classList.toggle('is-hidden', !game.hasSave('adult-relocation'));
+  updateCampaignLocks();
   startTitleMusic();
 }
 
@@ -62,6 +98,7 @@ async function beginChapter() {
 }
 
 function showCampaignIntro(campaignId) {
+  if (!campaignIsUnlocked(campaignId)) return;
   selectedCampaignId = campaignId;
   const campaign = game.selectCampaign(campaignId);
   selectedCampaignReady = preloader.preloadChapter(campaign.startChapter);
@@ -77,6 +114,15 @@ function showCampaignIntro(campaignId) {
       <p>A surviving Reardon crate hums beneath the spare tire. Its Catalog Relocation Unit classifies musicians, movers and management materials as company property.</p>
       <p>One broken cassette adapter later, John reaches 1993, Daryl lands in 1987, Michael McDonald wakes in 2001, and Joe demands that everyone finish the delivery before overtime begins.</p>`;
     introNext.textContent = 'BEGIN ADULT RELOCATION ›';
+  } else if (campaignId === 'finale') {
+    openingCrawlCopy.innerHTML = `
+      <p class="intro-kicker">THE UHALL DEPOT · 2008</p>
+      <h1>THE SOUND OF<br />MOVING ON</h1>
+      <p>The timeline is repaired. The moving company is not.</p>
+      <p>A label hidden in Joe Timmins’s revised handbook leads John and Daryl to an unopened rehearsal reel from before Uhall &amp; Oates moved its first sofa.</p>
+      <p>Joe has already sold their comeback as a cardboard-sponsored anniversary commercial. Jesse and Joe Reardon have one final clause designed to make the company more important than the music.</p>
+      <p>John and Daryl have rescued each other from contracts, crates, and time. Now they must decide what they actually want to do.</p>`;
+    introNext.textContent = 'BEGIN THE FINAL CAMPAIGN ›';
   } else {
     openingCrawlCopy.innerHTML = originalCrawl;
     introNext.textContent = 'BEGIN CHAPTER 1 ›';
@@ -86,12 +132,16 @@ function showCampaignIntro(campaignId) {
 }
 
 document.getElementById('start-game').addEventListener('click', () => showCampaignIntro('original'));
+continueOriginal.addEventListener('click', () => continueSavedCampaign('original'));
 startSequel.addEventListener('click', () => showCampaignIntro('adult-relocation'));
 continueSequel.addEventListener('click', () => {
-  stopTitleMusic();
-  titleScreen.classList.add('is-hidden');
-  introScreen.classList.add('is-hidden');
-  game.continueCampaign('adult-relocation');
+  if (!campaignIsUnlocked('adult-relocation')) return;
+  continueSavedCampaign('adult-relocation');
+});
+startFinale.addEventListener('click', () => showCampaignIntro('finale'));
+continueFinale.addEventListener('click', () => {
+  if (!campaignIsUnlocked('finale')) return;
+  continueSavedCampaign('finale');
 });
 startTitleMusic();
 window.addEventListener('load', startTitleMusic, { once: true });
@@ -112,6 +162,7 @@ settings = createSettings({
     game.setSoundEnabled(values.soundEnabled);
     game.configureMusic({ mode: values.musicMode, urls: values.externalUrls });
     gameRoot.classList.toggle('debug-mode', values.debugEnabled);
+    updateCampaignLocks();
     const titleSources = musicSources('title');
     const titleSource = values.musicMode === 'original'
       ? titleSources.original
@@ -132,6 +183,7 @@ settings = createSettings({
     game.debugStart(chapterId);
   },
 });
+updateCampaignLocks();
 startTitleMusic();
 introNext.addEventListener('click', beginChapter);
 

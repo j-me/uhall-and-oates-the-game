@@ -1,8 +1,8 @@
 # Uhall & Oates: The Game
 
-A two-campaign browser point-and-click adventure: the complete six-chapter original with a two-scene epilogue, plus the seven-chapter time-travel sequel **Uhall & Oates II: Adult Relocation**. It uses a classic verb-and-inventory interface, exaggerated 2D adventure-game art, chat-bubble dialogue, CRT presentation, puzzle-state animations, and chapter-specific MP3 music.
+A three-campaign browser point-and-click adventure: the complete six-chapter original, the seven-chapter time-travel sequel **Uhall & Oates II: Adult Relocation**, and the six-chapter conclusion **Uhall & Oates III: The Sound of Moving On**. It uses a classic verb-and-inventory interface, exaggerated 2D adventure-game art, chat-bubble dialogue, CRT presentation, puzzle-state animations, and chapter-specific MP3 music.
 
-John Oates follows the Reardons’ shipping trail from Old Orchard Beach to New York, London, Tokyo, and The Forks, Maine to rescue Daryl Hall and break Reardon Records’ Recall Clause. Then a 1993 Maxima scatters John, Daryl, and Michael McDonald across four decades. The campaigns are documented in [`docs/uhall-oates-production-outline.md`](docs/uhall-oates-production-outline.md) and [`docs/adult-relocation-production-outline.md`](docs/adult-relocation-production-outline.md).
+John Oates follows the Reardons’ shipping trail to rescue Daryl Hall, a 1993 Maxima then scatters the crew across four decades, and the final campaign brings John and Daryl back to music through a shared live performance. The campaigns are documented in [`docs/uhall-oates-production-outline.md`](docs/uhall-oates-production-outline.md), [`docs/adult-relocation-production-outline.md`](docs/adult-relocation-production-outline.md), and [`docs/final-campaign-storyline.md`](docs/final-campaign-storyline.md).
 
 ## Run
 
@@ -34,13 +34,15 @@ The phone layout uses dynamic viewport units and display safe areas for current 
 
 ## Local and distributable music
 
-The repository ships with sixteen original synth cues in `assets/audio/music/`. Their note patterns are defined by this project and can be regenerated with:
+The repository ships with twenty-three original synth cues in `assets/audio/music/`. Their note patterns are defined by this project and can be regenerated with:
 
 ```sh
 node scripts/generate-repo-music.mjs
 ```
 
 The generator requires `ffmpeg`. Optional commercial recordings belong in `assets/audio/music-local/`, which is excluded by `.gitignore`. Do not force-add files from `music-local/` to GitHub unless you independently have distribution rights.
+
+Download every configured local track with `npm run download:music`, or only the final campaign with `npm run download:music:final`. The downloader also accepts a custom slot prefix as its second argument.
 
 The in-game **Settings** menu controls the soundtrack:
 
@@ -55,6 +57,9 @@ Optional files in `assets/audio/music-local/` use neutral slot-based names:
 - `outro.mp3`
 - `adult-01.mp3` through `adult-07.mp3`
 - `adult-outro.mp3`
+- `final-01.mp3` through `final-06.mp3`
+- `final-outro.mp3`
+- `Youre_Doing_It.mp3` — the optional full-length song used by the final performance and synchronized lyric crawl
 
 Settings are saved in the browser for future sessions. URL fields are optional and can point to any browser-playable audio resource whose host permits cross-origin playback.
 The Settings panel can also copy the complete configuration as JSON or apply a pasted JSON block, making it easy to move every music URL and toggle to another browser at once.
@@ -110,14 +115,17 @@ Each chapter has a small, ordered inventory chain. Items are consumed once their
 
 - `src/game-data/campaigns/original/` — original campaign, `original-chapter-*`, `original-scene-*`, and `original-dialogue-*` modules.
 - `src/game-data/campaigns/adult-relocation/` — sequel campaign plus `adult-chapter-*` and `adult-scene-*` modules.
+- `src/game-data/campaigns/finale/` — final campaign plus `final-chapter-*` and `final-scene-*` modules.
 - `src/game-data/puzzles/original/` — original-campaign interactive puzzle controllers.
 - `src/game-data/puzzles/shared/` — reusable puzzle presentation and the data-driven logic console.
+- `src/game-data/puzzles/finale/` — the touch- and keyboard-friendly four-lane rhythm rehearsal.
 - `src/game-data/items/` — inventory inspection copy shared by the engine.
 - `src/game-data/debug/` — campaign test loadouts.
 - `src/engine/` — renderer, game state, interactions, scene loading, and save support.
 - `src/ui/` — shared inventory, verb bar, dialogue, completion, and video presentation.
 - `assets/art/campaigns/original/` — original-campaign chapter backgrounds, reveal cards, and props.
 - `assets/art/campaigns/adult-relocation/` — sequel chapter backgrounds and reveal cards.
+- `assets/art/campaigns/finale/` — final-campaign depot, studio, rehearsal, concert, epilogue, visible prop, and campaign-specific inventory art.
 - `assets/art/characters/` and `assets/art/ui/` — character and interface art shared by both campaigns.
 - `assets/audio/` — music, ambience, and sound effects.
 - `assets/fonts/` — licensed fonts.

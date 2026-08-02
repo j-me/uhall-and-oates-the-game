@@ -108,6 +108,7 @@ current = chapters.outro.scenes['timmins-maxima'];
 action = use(current, 'gold-maxima', 'emptyTapeRoll');
 assert.equal(action.video, 'assets/video/uhallandoates.mp4');
 assert(action.complete, 'The ending video should lead to the game-complete panel.');
+assert(action.setFlags?.includes('originalGameComplete'), 'The original epilogue must unlock Adult Relocation.');
 
 for (const chapter of Object.values(chapters)) {
   for (const chapterScene of Object.values(chapter.scenes)) {
@@ -126,5 +127,84 @@ for (const chapterId of ['chapter-01', 'chapter-02', 'chapter-03', 'chapter-04',
     `${chapterId} debug start must preserve the tape roll required by the epilogue`,
   );
 }
+
+function verifyOriginalDebugStart(chapterId, expectedNext, operations) {
+  const snapshot = {
+    inventory: new Map((debugLoadouts[chapterId] || []).map((entry) => [entry.id, entry])),
+    flags: {},
+  };
+  const currentScene = chapterId === 'outro'
+    ? chapters.outro.scenes['timmins-maxima']
+    : scene(chapterId);
+  let lastAction;
+
+  const applySnapshot = (entryAction) => {
+    assert(!(entryAction.requires || []).some((flag) => !snapshot.flags[flag]), `${chapterId} debug start misses prerequisite ${entryAction.requires}`);
+    entryAction.removeItems?.forEach((id) => snapshot.inventory.delete(id));
+    entryAction.give?.forEach((entry) => snapshot.inventory.set(entry.id, entry));
+    entryAction.setFlags?.forEach((flag) => { snapshot.flags[flag] = true; });
+    lastAction = entryAction;
+  };
+
+  for (const operation of operations) {
+    const target = hotspot(currentScene, operation.hotspot);
+    if (operation.type === 'take') {
+      assert(target.item, `${chapterId} debug TAKE target has no item: ${operation.hotspot}`);
+      snapshot.inventory.set(target.item.id, target.item);
+      snapshot.flags[`${operation.hotspot}Taken`] = true;
+      continue;
+    }
+    if (operation.type === 'takeAction') {
+      assert(target.actions?.take, `${chapterId} debug TAKE action is missing: ${operation.hotspot}`);
+      applySnapshot(target.actions.take);
+      continue;
+    }
+    assert(snapshot.inventory.has(operation.item), `${chapterId} debug start cannot obtain ${operation.item}`);
+    const entryAction = target.useWith?.[operation.item];
+    assert(entryAction, `${chapterId} debug start cannot use ${operation.item} on ${operation.hotspot}`);
+    applySnapshot(entryAction);
+  }
+
+  if (expectedNext) assert.equal(lastAction?.next?.chapterId, expectedNext, `${chapterId} debug start cannot progress to ${expectedNext}`);
+  else assert(lastAction?.complete, `${chapterId} debug start cannot complete its ending`);
+}
+
+verifyOriginalDebugStart('chapter-01', 'chapter-02', [
+  { type: 'take', hotspot: 'taffy-bin' },
+  { type: 'use', hotspot: 'broken-crane', item: 'taffyCoil' },
+  { type: 'use', hotspot: 'gull', item: 'frenchFries' },
+  { type: 'takeAction', hotspot: 'pier-manifest' },
+]);
+verifyOriginalDebugStart('chapter-02', 'chapter-03', [
+  { type: 'take', hotspot: 'shipping-label' },
+  { type: 'use', hotspot: 'storage-directory', item: 'shippingLabel' },
+  { type: 'take', hotspot: 'card-display' },
+  { type: 'use', hotspot: 'baltos', item: 'toppsPack' },
+]);
+verifyOriginalDebugStart('chapter-03', 'chapter-04', [
+  { type: 'use', hotspot: 'scoreboard', item: 'shreddedInvoice' },
+  { type: 'take', hotspot: 'equipment-shed' },
+  { type: 'use', hotspot: 'home-plate', item: 'wiffleBall' },
+]);
+verifyOriginalDebugStart('chapter-04', 'chapter-05', [
+  { type: 'take', hotspot: 'record-shop' },
+  { type: 'take', hotspot: 'no-can-do-form' },
+  { type: 'use', hotspot: 'michael-mcdonald', item: 'rejectedShippingForm' },
+  { type: 'use', hotspot: 'customs-desk', item: 'artistAuthorization' },
+  { type: 'use', hotspot: 'customs-desk', item: 'reversibleInk' },
+  { type: 'use', hotspot: 'tube-map', item: 'londonShippingLabel' },
+]);
+verifyOriginalDebugStart('chapter-05', 'chapter-06', [
+  { type: 'take', hotspot: 'stage-prop-warehouse' },
+  { type: 'use', hotspot: 'shipping-service-lift', item: 'deliveryDocket' },
+  { type: 'use', hotspot: 'recording-truck', item: 'tokyoAccessPass' },
+]);
+verifyOriginalDebugStart('chapter-06', undefined, [
+  { type: 'use', hotspot: 'broadcast-tower', item: 'counterMelody' },
+  { type: 'use', hotspot: 'archive-door', item: 'privateEyesManifest' },
+]);
+verifyOriginalDebugStart('outro', undefined, [
+  { type: 'use', hotspot: 'gold-maxima', item: 'emptyTapeRoll' },
+]);
 
 console.log(`Campaign solvability check passed: 6 chapters plus epilogue, ${state.inventory.size} final inventory entries.`);

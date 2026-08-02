@@ -8,6 +8,11 @@ const visualLabels = {
   'vocal-network-console': ['VOCAL NETWORK', 'ACCESS GRANTED'],
   'switchboard-console': ['LINE PATCH', 'CALL ROUTED'],
   'handbook-console': ['EVIDENCE CORE', 'PARADOX FILED'],
+  'final-reel-console': ['REEL DECK', 'RECORDING RESTORED'],
+  'final-stereo-console': ['STEREO PATCH', 'CHANNELS REUNITED'],
+  'final-studio-console': ['STUDIO PATCH', 'MIX RECOVERED'],
+  'final-brand-console': ['BRAND CONSOLE', 'LIVE SLOT OPEN'],
+  'final-concert-console': ['LIVE CONTROL', 'ARTIST UNAVAILABLE'],
 };
 
 const modeCopy = {

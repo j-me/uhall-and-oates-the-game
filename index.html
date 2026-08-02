@@ -91,14 +91,25 @@
         <img src="assets/art/ui/uhall-oates-truck-logo-v2.png" alt="Uhall and Oates: The Game" />
         <img class="anniversary-badge" src="assets/art/ui/20th-something-anniversary-badge-v1.png"
           alt="The 20th-something year anniversary" />
+        <div class="title-identity">
+          <p>UHALL &amp; OATES - THE GAME</p>
+          <p class="production-credit">&copy; 2026 A Woman is Wild Production</p>
+        </div>
       </div>
       <div class="campaign-actions">
-        <button id="start-game" type="button">PLAY THE ORIGINAL</button>
-        <button id="start-sequel" type="button">PLAY ADULT RELOCATION</button>
-        <button id="continue-sequel" class="is-hidden" type="button">CONTINUE ADULT RELOCATION</button>
+        <div class="campaign-play-actions">
+          <button id="start-game" type="button">PLAY THE ORIGINAL</button>
+          <button id="start-sequel" type="button" disabled
+            title="Complete The Original Game to unlock Adult Relocation">🔒 LOCKED</button>
+          <button id="start-finale" type="button" disabled
+            title="Complete Adult Relocation to unlock The Sound of Moving On">🔒 LOCKED</button>
+        </div>
+        <div class="campaign-continue-actions">
+          <button id="continue-original" class="is-hidden" type="button">CONTINUE THE ORIGINAL</button>
+          <button id="continue-sequel" class="is-hidden" type="button">CONTINUE ADULT RELOCATION</button>
+          <button id="continue-finale" class="is-hidden" type="button">CONTINUE THE SOUND OF MOVING ON</button>
+        </div>
       </div>
-      <p>UHALL &amp; OATES - THE GAME</p>
-      <p class="production-credit">&copy; 2026 A Woman is Wild Production</p>
     </section>
     <section id="intro-screen" class="intro-screen is-hidden" aria-live="polite" aria-label="Game introduction">
       <div class="crawl-horizon" aria-hidden="true"></div>
@@ -196,7 +207,18 @@
             <label>Sequel 5<input type="url" data-track-url="adult-05" placeholder="https://…/adult-05.mp3" /></label>
             <label>Sequel 6<input type="url" data-track-url="adult-06" placeholder="https://…/adult-06.mp3" /></label>
             <label>Sequel 7<input type="url" data-track-url="adult-07" placeholder="https://…/adult-07.mp3" /></label>
-            <label>Sequel Epilogue<input type="url" data-track-url="adult-outro" placeholder="https://…/adult-outro.mp3" /></label>
+            <label>Sequel Epilogue<input type="url" data-track-url="adult-outro"
+                placeholder="https://…/adult-outro.mp3" /></label>
+            <hr />
+            <b>THE SOUND OF MOVING ON</b>
+            <label>Finale 1<input type="url" data-track-url="final-01" placeholder="https://…/final-01.mp3" /></label>
+            <label>Finale 2<input type="url" data-track-url="final-02" placeholder="https://…/final-02.mp3" /></label>
+            <label>Finale 3<input type="url" data-track-url="final-03" placeholder="https://…/final-03.mp3" /></label>
+            <label>Finale 4<input type="url" data-track-url="final-04" placeholder="https://…/final-04.mp3" /></label>
+            <label>Finale 5<input type="url" data-track-url="final-05" placeholder="https://…/final-05.mp3" /></label>
+            <label>Finale 6<input type="url" data-track-url="final-06" placeholder="https://…/final-06.mp3" /></label>
+            <label>Final Epilogue<input type="url" data-track-url="final-outro"
+                placeholder="https://…/final-outro.mp3" /></label>
             <button id="reset-music-urls" type="button">CLEAR URL OVERRIDES</button>
           </details>
 
@@ -227,6 +249,21 @@
               <button type="button" data-debug-chapter="adult-07">7</button>
               <button type="button" data-debug-chapter="adult-outro" aria-label="Sequel epilogue">E</button>
             </div>
+            <span>THE SOUND OF MOVING ON</span>
+            <div>
+              <button type="button" data-debug-chapter="final-01">1</button>
+              <button type="button" data-debug-chapter="final-02">2</button>
+              <button type="button" data-debug-chapter="final-03">3</button>
+              <button type="button" data-debug-chapter="final-04">4</button>
+              <button type="button" data-debug-chapter="final-05">5</button>
+              <button type="button" data-debug-chapter="final-06">6</button>
+              <button type="button" data-debug-chapter="final-outro" aria-label="Final epilogue">E</button>
+            </div>
+          </div>
+          <div id="debug-storage-reset" class="debug-storage-reset is-hidden">
+            <span><b>START FRESH</b><small>Delete settings, checkpoints, and campaign unlocks stored by this game.</small></span>
+            <button id="reset-local-storage" type="button">DELETE LOCAL DATA</button>
+            <output id="reset-local-storage-status" aria-live="polite"></output>
           </div>
         </div>
 

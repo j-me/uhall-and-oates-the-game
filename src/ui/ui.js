@@ -80,7 +80,7 @@ export function createUI(root, callbacks) {
 
   function render(state) {
     const availableCharacters = state.availableCharacters || [];
-    sequelTools.classList.toggle('is-hidden', state.campaignId === 'original');
+    sequelTools.classList.toggle('is-hidden', state.campaignId !== 'adult-relocation');
     sequelTools.classList.toggle('is-time-bridge', state.chapterId === 'adult-06');
     characterRoot.replaceChildren();
     const chapter06Guide = {
@@ -169,6 +169,7 @@ export function createUI(root, callbacks) {
       button.className = 'item';
       button.title = item.label;
       button.dataset.label = item.label;
+      button.dataset.itemId = item.id;
       button.setAttribute('aria-label', item.label);
       button.classList.toggle('selected', item.id === state.selectedItem);
       const illustration = document.createElement('span');
@@ -251,6 +252,184 @@ export function createUI(root, callbacks) {
         panel.append(button);
       }
       sceneRoot.append(panel);
+    },
+    showPerformance: ({ src, title, kicker, alt, audio, fallbackAudio, duration = 0, lyrics = [], readyAfter = 4600, soundEnabled = true }, onClose) => {
+      root.querySelector('.final-performance')?.remove();
+      const overlay = document.createElement('div');
+      overlay.className = 'final-performance';
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-label', `${title} finale performance`);
+
+      const image = document.createElement('img');
+      image.className = 'final-performance__art';
+      image.src = src;
+      image.alt = alt || 'John Oates and Daryl Hall performing music together';
+
+      const copy = document.createElement('div');
+      copy.className = 'final-performance__copy';
+      const small = document.createElement('span');
+      small.textContent = kicker || 'A NEW UHALL & OATES ORIGINAL';
+      const heading = document.createElement('strong');
+      heading.textContent = title;
+      copy.append(small, heading);
+
+      const notes = document.createElement('div');
+      notes.className = 'final-performance__notes';
+      ['♪', '♫', '♪', '♬', '♫'].forEach((note) => {
+        const symbol = document.createElement('i');
+        symbol.textContent = note;
+        notes.append(symbol);
+      });
+
+      const equalizer = document.createElement('div');
+      equalizer.className = 'final-performance__equalizer';
+      Array.from({ length: 18 }, () => document.createElement('i')).forEach((bar) => equalizer.append(bar));
+
+      const lyricViewport = document.createElement('div');
+      lyricViewport.className = 'final-performance__lyrics';
+      lyricViewport.setAttribute('aria-label', 'Song lyrics');
+      const lyricTrack = document.createElement('div');
+      lyricTrack.className = 'final-performance__lyrics-track';
+      const lyricSections = lyrics.map(({ section, lines }) => {
+        const block = document.createElement('section');
+        const label = document.createElement('strong');
+        label.textContent = section;
+        block.append(label);
+        lines.forEach((line) => {
+          const row = document.createElement('p');
+          row.textContent = line;
+          block.append(row);
+        });
+        lyricTrack.append(block);
+        return block;
+      });
+      lyricViewport.append(lyricTrack);
+
+      const song = audio && soundEnabled ? document.createElement('audio') : null;
+      if (song) {
+        song.src = audio;
+        song.preload = 'auto';
+        song.playsInline = true;
+      }
+
+      const audioToggle = document.createElement('button');
+      audioToggle.type = 'button';
+      audioToggle.className = 'final-performance__audio-toggle';
+      audioToggle.textContent = '▶ PLAY SONG';
+      audioToggle.hidden = !song;
+
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'final-performance__close';
+      close.textContent = 'SKIP TO THE ENCORE ›';
+      let closed = false;
+      let frameId = 0;
+      let readyTimer = 0;
+      let triedFallback = false;
+      let activeLyricIndex = -1;
+      const lyricLineCounts = lyrics.map(({ lines }) => Math.max(1, lines.length));
+      const totalLyricLines = lyricLineCounts.reduce((sum, count) => sum + count, 0);
+      const setPlaying = (playing) => {
+        overlay.classList.toggle('is-playing', playing);
+        audioToggle.textContent = playing ? '❚❚ PAUSE SONG' : '▶ PLAY SONG';
+      };
+      const markReady = () => {
+        if (!overlay.isConnected) return;
+        overlay.classList.add('is-ready');
+        close.textContent = 'TAKE A BOW ›';
+      };
+      const updateLyrics = () => {
+        if (!song || !lyrics.length || closed) return;
+        const total = Number.isFinite(song.duration) ? song.duration : duration;
+        const progress = total > 0 ? Math.min(1, Math.max(0, song.currentTime / total)) : 0;
+        const hasCueSheet = lyrics.every((entry) => Number.isFinite(entry.start));
+        let nextIndex = 0;
+        if (hasCueSheet) {
+          for (let index = 0; index < lyrics.length; index += 1) {
+            if (song.currentTime >= lyrics[index].start) nextIndex = index;
+            else break;
+          }
+        } else {
+          const lyricPosition = progress * totalLyricLines;
+          let accumulatedLines = 0;
+          nextIndex = lyricSections.length - 1;
+          for (let index = 0; index < lyricLineCounts.length; index += 1) {
+            accumulatedLines += lyricLineCounts[index];
+            if (lyricPosition < accumulatedLines) { nextIndex = index; break; }
+          }
+        }
+        if (nextIndex !== activeLyricIndex) {
+          activeLyricIndex = nextIndex;
+          lyricSections.forEach((entry, index) => entry.classList.toggle('is-current', index === activeLyricIndex));
+        }
+        const sectionOffset = (index) => {
+          const section = lyricSections[index];
+          const desired = section.offsetTop + section.offsetHeight / 2 - lyricViewport.clientHeight / 2;
+          const maximum = Math.max(0, lyricTrack.scrollHeight - lyricViewport.clientHeight);
+          return Math.min(maximum, Math.max(0, desired));
+        };
+        let offset = sectionOffset(activeLyricIndex);
+        if (hasCueSheet && activeLyricIndex < lyrics.length - 1) {
+          const cueStart = lyrics[activeLyricIndex].start;
+          const cueEnd = lyrics[activeLyricIndex + 1].start;
+          const cueProgress = Math.min(1, Math.max(0, (song.currentTime - cueStart) / (cueEnd - cueStart)));
+          const travelProgress = Math.min(1, Math.max(0, (cueProgress - .18) / .64));
+          const easedProgress = travelProgress * travelProgress * (3 - 2 * travelProgress);
+          offset += (sectionOffset(activeLyricIndex + 1) - offset) * easedProgress;
+        }
+        lyricTrack.style.transform = `translateY(${-offset}px)`;
+        frameId = window.requestAnimationFrame(updateLyrics);
+      };
+      const playSong = () => {
+        if (!song) return;
+        song.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      };
+      const finish = () => {
+        if (closed) return;
+        closed = true;
+        window.clearTimeout(readyTimer);
+        window.cancelAnimationFrame(frameId);
+        song?.pause();
+        overlay.classList.add('is-closing');
+        window.setTimeout(() => {
+          overlay.remove();
+          onClose?.();
+        }, 320);
+      };
+      close.addEventListener('click', finish);
+      audioToggle.addEventListener('click', () => {
+        if (!song) return;
+        if (song.paused) playSong();
+        else song.pause();
+      });
+      song?.addEventListener('play', () => setPlaying(true));
+      song?.addEventListener('pause', () => setPlaying(false));
+      song?.addEventListener('ended', () => {
+        setPlaying(false);
+        markReady();
+      });
+      song?.addEventListener('error', () => {
+        if (fallbackAudio && !triedFallback) {
+          triedFallback = true;
+          song.src = fallbackAudio;
+          song.load();
+          playSong();
+        } else {
+          audioToggle.textContent = 'SONG UNAVAILABLE';
+          audioToggle.disabled = true;
+          readyTimer = window.setTimeout(markReady, readyAfter);
+        }
+      });
+      overlay.append(image, notes, copy, lyricViewport, equalizer, audioToggle, close);
+      sceneRoot.append(overlay);
+      close.focus({ preventScroll: true });
+      const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      if (song) {
+        frameId = window.requestAnimationFrame(updateLyrics);
+        playSong();
+      } else {
+        readyTimer = window.setTimeout(markReady, reducedMotion ? 0 : readyAfter);
+      }
     },
     showVideo: (src, onClose) => {
       root.querySelector('.video-overlay')?.remove();

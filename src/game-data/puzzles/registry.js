@@ -4,6 +4,7 @@ import { showStorageDirectoryPuzzle } from './original/original-puzzle-storage-d
 import { showVoiceMixerPuzzle } from './original/original-puzzle-voice-mixer.js';
 import { showWifflePuzzle } from './original/original-puzzle-wiffle.js';
 import { showLogicConsolePuzzle } from './shared/shared-puzzle-logic-console.js';
+import { showRhythmRehearsalPuzzle } from './finale/final-puzzle-rhythm-rehearsal.js';
 
 const adultLogicPuzzle = (interactionMode) => (root, options) =>
   showLogicConsolePuzzle(root, { ...options, interactionMode });
@@ -21,6 +22,12 @@ export const puzzleControllers = {
   vocalNetwork: adultLogicPuzzle('faders'),
   switchboard: adultLogicPuzzle('patchboard'),
   handbookContradictions: adultLogicPuzzle('stamps'),
+  reelRestore: adultLogicPuzzle('dials'),
+  stereoPatch: adultLogicPuzzle('patchboard'),
+  studioPatch: adultLogicPuzzle('faders'),
+  brandBypass: adultLogicPuzzle('cards'),
+  rhythmRehearsal: showRhythmRehearsalPuzzle,
+  concertStations: adultLogicPuzzle('switches'),
 };
 
 export function showPuzzle(id, root, options) {

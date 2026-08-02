@@ -61,6 +61,7 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
   let campaignChapters = campaign.chapters;
   const state = createState(campaign);
   const saves = createSaveStore();
+  saves.reconcile(availableCampaigns);
   const audio = createAudio();
   const ui = createUI(root, {
     onVerb: selectVerb,
@@ -84,8 +85,14 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
     failedActions = 0;
   }
 
+  function persistCheckpoint() {
+    if (state.debugSession || !state.chapterId || !state.sceneId) return false;
+    if (campaign.completionFlag && state.flags[campaign.completionFlag]) saves.markComplete(campaign.id);
+    return saves.save(campaign.id, state);
+  }
+
   function returnHome() {
-    if (state.flags.adultGameComplete) saves.clear(campaign.id);
+    if (campaign.completionFlag && state.flags[campaign.completionFlag]) saves.clear(campaign.id);
     resetState(campaign);
     chapter = undefined;
     resetFailures();
@@ -160,7 +167,7 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
     };
     if (showIntro) ui.showSceneIntro(chapter.title, scene, enterScene);
     else enterScene();
-    if (!state.debugSession) saves.save(campaign.id, state);
+    persistCheckpoint();
   }
 
   function respond(text, hotspot) {
@@ -222,7 +229,7 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
     ui.render(state);
     ui.message(`${state.activeCharacterId === 'john-oates' ? 'John' : state.activeCharacterId === 'daryl-hall' ? 'Daryl' : 'Michael'} retrieves the ${item.label} from the Maxima’s temporal trunk.`);
     audio.pickup();
-    if (!state.debugSession) saves.save(campaign.id, state);
+    persistCheckpoint();
   }
 
   function depositIntoTrunk(itemId) {
@@ -246,7 +253,7 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
     ui.clearSpeech();
     ui.message(`${actorName(state.activeCharacterId)} returns the ${item.label} to the Maxima’s temporal trunk.`);
     audio.pickup();
-    if (!state.debugSession) saves.save(campaign.id, state);
+    persistCheckpoint();
   }
 
   function interact(hotspot) {
@@ -282,6 +289,7 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
           onMove: () => audio.click(),
           onAdjust: () => audio.click(),
           onInspect: () => audio.click(),
+          onHit: () => audio.click(),
           onLaunch: () => audio.effect('wiffle'),
           onTest: () => audio.effect(action.effect || 'success'),
           onMiss: () => { registerFailure(); audio.error(); },
@@ -304,10 +312,11 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
       ui.render(state);
       renderer.render(chapter.scenes[state.sceneId], state, state.selectedVerb);
       respond(response, hotspot);
-      renderer.animateInteraction(hotspot, 'pickup');
+      renderer.animatePickup(hotspot, hotspot.item);
       resetFailures();
-      renderer.reactJohn('startled');
+      renderer.reactJohn('relieved');
       audio.pickup();
+      persistCheckpoint();
       return;
     }
     if (verb === 'use' && selectedItem) {
@@ -351,6 +360,7 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
     renderer.render(chapter.scenes[state.sceneId], state, state.selectedVerb);
     respond(action.message, hotspot);
     renderer.animateInteraction(hotspot, action.effect || (action.pickup ? 'pickup' : 'success'));
+    action.give?.forEach((item, index) => renderer.animatePickup(hotspot, item, index * 120));
     if (!failedAction) renderer.reactJohn(action.success ? 'relieved' : 'startled');
     renderer.reactCharacter(hotspot.id);
     if (action.sound && audio[action.sound]) audio[action.sound]();
@@ -373,11 +383,14 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
         if (state.chapterId) audio.startChapter(state.chapterId);
         completeAction();
       });
+    } else if (action.performance) {
+      audio.stopBackground();
+      ui.showPerformance({ ...action.performance, soundEnabled: audio.enabled }, completeAction);
     } else {
       completeAction();
     }
     if (action.goToScene) loadScene(action.goToScene);
-    else if (!state.debugSession) saves.save(campaign.id, state);
+    else persistCheckpoint();
   }
 
   function replaceInventory(items) {
@@ -409,17 +422,24 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
   }
 
   function continueCampaign(campaignId) {
-    const selected = selectCampaign(campaignId);
+    const selected = availableCampaigns[campaignId];
+    if (!selected) return false;
     const snapshot = saves.load(campaignId);
-    if (!snapshot?.chapterId || !selected.chapters[snapshot.chapterId]) return false;
+    const savedChapter = snapshot && selected.chapters[snapshot.chapterId];
+    if (!savedChapter?.scenes[snapshot.sceneId]) return false;
+    selectCampaign(campaignId);
     Object.assign(state, snapshot);
     campaignChapters = selected.chapters;
-    chapter = campaignChapters[state.chapterId];
+    chapter = savedChapter;
     state.inventory = state.inventories[state.activeCharacterId] || [];
     ui.setChapter(chapter.title);
     audio.startChapter(state.chapterId);
     loadScene(state.sceneId, { showIntro: false });
     return true;
+  }
+
+  function isCampaignComplete(campaignId) {
+    return saves.isComplete(campaignId);
   }
 
   return {
@@ -428,6 +448,7 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
     continueCampaign,
     clearSave: (campaignId = campaign.id) => saves.clear(campaignId),
     hasSave: (campaignId = campaign.id) => saves.has(campaignId),
+    isCampaignComplete,
     activateCharacter,
     debugStart,
     loadScene,

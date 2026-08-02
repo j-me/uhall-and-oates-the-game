@@ -22,6 +22,8 @@ export const adultRelocationCampaign = {
   id: 'adult-relocation',
   title: 'Uhall & Oates II: Adult Relocation',
   shortTitle: 'Adult Relocation',
+  requiresCampaign: 'original',
+  completionFlag: 'adultGameComplete',
   startChapter: 'adult-01',
   startScene: 'adult-maxima-trunk',
   chapterOrder: chapterList.map((chapter) => chapter.id),

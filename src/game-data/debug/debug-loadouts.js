@@ -26,6 +26,16 @@ export const debugLoadouts = {
     { id: 'emptyTapeRoll', label: 'empty tape roll', icon: 'tape' },
   ],
   outro: [{ id: 'emptyTapeRoll', label: 'empty tape roll', icon: 'tape' }],
+  'final-01': [{ id: 'label2008', label: 'shipping label dated 2008', icon: 'final-label-2008' }],
+  'final-02': [{ id: 'rehearsalReel', label: 'restored rehearsal reel', icon: 'final-restored-reel' }],
+  'final-03': [{ id: 'setListFragment', label: 'shared set-list fragment', icon: 'final-set-list' }],
+  'final-04': [{ id: 'fullRehearsalMix', label: 'full rehearsal mix', icon: 'final-full-mix' }],
+  'final-05': [
+    { id: 'cleanLiveMix', label: 'unsponsored live rehearsal mix', icon: 'final-clean-live-mix' },
+    { id: 'broadcastRouteCard', label: 'Old Orchard broadcast route card', icon: 'final-route-card' },
+  ],
+  'final-06': [{ id: 'sharedArrangement', label: 'John and Daryl’s shared arrangement', icon: 'final-shared-arrangement' }],
+  'final-outro': [],
 };
 
 // A debug start is a self-contained, solvable snapshot—not merely a late-game

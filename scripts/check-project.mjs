@@ -29,11 +29,14 @@ const namingRules = [
   ['src/game-data/campaigns/original/dialogue', /^original-dialogue-.+\.js$/],
   ['src/game-data/campaigns/adult-relocation/chapters', /^adult-chapter-.+\.js$/],
   ['src/game-data/campaigns/adult-relocation/scenes', /^adult-scene-.+\.js$/],
+  ['src/game-data/campaigns/finale/chapters', /^final-chapter-.+\.js$/],
+  ['src/game-data/campaigns/finale/scenes', /^final-scene-.+\.js$/],
 ];
 
 const legacyCampaignDirectories = [
   'src/game-data/original',
   'src/game-data/adult-relocation',
+  'src/game-data/finale',
 ].filter(existsSync);
 if (legacyCampaignDirectories.length) {
   throw new Error(`Campaigns must live under src/game-data/campaigns:\n${legacyCampaignDirectories.join('\n')}`);
@@ -54,11 +57,28 @@ for (const name of adultSceneFiles) {
   }
 }
 
+const finalSceneDirectory = 'src/game-data/campaigns/finale/scenes';
+const finalSceneFiles = readdirSync(finalSceneDirectory)
+  .filter((name) => name.endsWith('.js') && name !== 'final-scene-helpers.js');
+for (const name of finalSceneFiles) {
+  const source = readFileSync(join(finalSceneDirectory, name), 'utf8');
+  if (!/\bexport const final[A-Z]\w+\s*=\s*\{/.test(source)) {
+    throw new Error(`Finale scene module must own its scene definition: ${name}`);
+  }
+}
+
 const { campaigns, chapters } = await import('../src/game-data/registry.js');
 const { characters } = await import('../src/game-data/characters.js');
 const { MUSIC_SLOTS, SFX_PATHS, musicSources } = await import('../src/game-data/audio/audio-manifest.js');
 if (Object.keys(chapters).length !== 7 || !chapters.outro || !campaigns['adult-relocation']) {
   throw new Error('Chapter registry must contain six chapters and the epilogue.');
+}
+if (campaigns.original.completionFlag !== 'originalGameComplete'
+  || campaigns['adult-relocation'].requiresCampaign !== 'original'
+  || campaigns['adult-relocation'].completionFlag !== 'adultGameComplete'
+  || campaigns.finale.requiresCampaign !== 'adult-relocation'
+  || campaigns.finale.completionFlag !== 'finalCampaignComplete') {
+  throw new Error('Campaign progression must unlock Original → Adult Relocation → Finale in order.');
 }
 
 const expectedMusicSlots = ['title', ...Object.values(campaigns).flatMap((campaign) => campaign.chapterOrder)];
@@ -87,6 +107,20 @@ if (missingAudioFiles.length || uncachedAudioFiles.length) {
 
 const titleFallback = musicSources('title').original;
 const indexSource = readFileSync('index.html', 'utf8');
+const cssSource = readFileSync('src/styles/main.css', 'utf8');
+if (!/\.inventory-icon\s*\{[^}]*display:block/.test(cssSource)) {
+  throw new Error('Background-image inventory icons need a rendered block box.');
+}
+for (const icon of [
+  'final-label-2008', 'final-damaged-reel', 'final-sound-blanket', 'final-bent-spool',
+  'final-restored-reel', 'final-set-list', 'final-patch-cable', 'final-full-mix',
+  'final-cue-card', 'final-clean-live-mix', 'final-route-card', 'final-shared-arrangement',
+  'final-purpose-receipt',
+]) {
+  if (!cssSource.includes(`.inventory-icon--${icon} { background-image:`)) {
+    throw new Error(`Finale inventory icon lacks CSS artwork: ${icon}`);
+  }
+}
 if (!indexSource.includes(`data-fallback-src="${titleFallback}"`)) {
   throw new Error(`Title audio fallback must reference ${titleFallback}.`);
 }

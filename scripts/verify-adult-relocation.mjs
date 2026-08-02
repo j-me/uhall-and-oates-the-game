@@ -175,4 +175,120 @@ assert.equal(debugChapterStates['adult-06'].flags.filter((flag) => flag.startsWi
 assert(debugInventory('adult-07').some((entry) => entry.id === 'filingNumber'), 'Adult Chapter 7 debug start needs the filing number');
 assert.equal(debugChapterStates['adult-07'].flags.filter((flag) => flag.startsWith('adultEvidence')).length, 5, 'Adult Chapter 7 debug start needs every evidence flag');
 
+function verifyAdultDebugStart(chapterId, expectedNext, operations) {
+  const setup = debugChapterStates[chapterId] || {};
+  const snapshot = {
+    actor: scene(chapterId).playerId || 'john-oates',
+    inventories: {
+      'john-oates': new Map((setup.inventory || []).map((entry) => [entry.id, entry])),
+      trunk: new Map(),
+    },
+    flags: Object.fromEntries((setup.flags || []).map((flag) => [flag, true])),
+  };
+  Object.entries(setup.inventories || {}).forEach(([owner, items]) => {
+    snapshot.inventories[owner] = new Map(items.map((entry) => [entry.id, entry]));
+  });
+  const owned = (owner = snapshot.actor) => {
+    snapshot.inventories[owner] ||= new Map();
+    return snapshot.inventories[owner];
+  };
+  let currentScene = scene(chapterId);
+  let lastAction;
+
+  const applySnapshot = (entryAction) => {
+    assert(!(entryAction.requires || []).some((flag) => !snapshot.flags[flag]), `${chapterId} debug start misses prerequisite ${entryAction.requires}`);
+    entryAction.removeItems?.forEach((id) => owned().delete(id));
+    entryAction.give?.forEach((entry) => owned().set(entry.id, entry));
+    Object.entries(entryAction.giveTo || {}).forEach(([owner, items]) => {
+      items.forEach((entry) => owned(owner).set(entry.id, entry));
+    });
+    entryAction.setFlags?.forEach((flag) => { snapshot.flags[flag] = true; });
+    lastAction = entryAction;
+  };
+
+  for (const operation of operations) {
+    if (operation.type === 'scene') {
+      currentScene = scene(chapterId, operation.scene);
+      snapshot.actor = currentScene.playerId || snapshot.actor;
+      continue;
+    }
+    if (operation.type === 'actor') {
+      snapshot.actor = operation.actor;
+      continue;
+    }
+    if (operation.type === 'retrieve') {
+      assert(owned('trunk').has(operation.item), `${chapterId} debug trunk cannot supply ${operation.item}`);
+      const entry = owned('trunk').get(operation.item);
+      owned('trunk').delete(operation.item);
+      owned().set(operation.item, entry);
+      continue;
+    }
+    const target = hotspot(currentScene, operation.hotspot);
+    if (operation.type === 'take') {
+      assert(target.item, `${chapterId} debug TAKE target has no item: ${operation.hotspot}`);
+      owned().set(target.item.id, target.item);
+      snapshot.flags[`${operation.hotspot}Taken`] = true;
+      continue;
+    }
+    if (operation.type === 'takeAction') {
+      assert(target.actions?.take, `${chapterId} debug TAKE action is missing: ${operation.hotspot}`);
+      applySnapshot(target.actions.take);
+      continue;
+    }
+    assert(owned().has(operation.item), `${chapterId}/${snapshot.actor} debug start cannot obtain ${operation.item}`);
+    const entryAction = target.useWith?.[operation.item];
+    assert(entryAction, `${chapterId} debug start cannot use ${operation.item} on ${operation.hotspot}`);
+    applySnapshot(entryAction);
+  }
+
+  if (expectedNext) assert.equal(lastAction?.next?.chapterId, expectedNext, `${chapterId} debug start cannot progress to ${expectedNext}`);
+  else assert(lastAction?.complete, `${chapterId} debug start cannot complete its ending`);
+}
+
+verifyAdultDebugStart('adult-01', 'adult-02', [
+  { type: 'take', hotspot: 'emergency-necktie' },
+  { type: 'take', hotspot: 'cassette-adapter' },
+  { type: 'use', hotspot: 'cassette-deck', item: 'emergencyNecktie' },
+  { type: 'use', hotspot: 'cassette-deck', item: 'repairedAdapter' },
+]);
+verifyAdultDebugStart('adult-02', 'adult-03', [
+  { type: 'take', hotspot: 'tuxedo-sash' },
+  { type: 'use', hotspot: 'safety-station', item: 'seminarSash' },
+  { type: 'use', hotspot: 'kenny-loggins', item: 'compliantVest' },
+  { type: 'scene', scene: 'adult-copier-room' },
+  { type: 'use', hotspot: 'retreat-copier', item: 'dangerCassette' },
+]);
+verifyAdultDebugStart('adult-03', 'adult-04', [
+  { type: 'take', hotspot: 'blank-announcement' },
+  { type: 'take', hotspot: 'expired-security-badge' },
+  { type: 'use', hotspot: 'announcement-booth', item: 'blankAnnouncement' },
+  { type: 'use', hotspot: 'mall-kiosk', item: 'closingCassette' },
+]);
+verifyAdultDebugStart('adult-04', 'adult-05', [
+  { type: 'take', hotspot: 'future-collectible' },
+  { type: 'use', hotspot: 'baltos-auction', item: 'futureCollectible' },
+  { type: 'use', hotspot: 'river-anomaly', item: 'auctionClaim' },
+]);
+verifyAdultDebugStart('adult-05', 'adult-06', [
+  { type: 'take', hotspot: 'michael-m-badge' },
+  { type: 'use', hotspot: 'michael-bolton', item: 'michaelBadge' },
+  { type: 'use', hotspot: 'server-room', item: 'adminBadge' },
+]);
+verifyAdultDebugStart('adult-06', 'adult-07', [
+  { type: 'use', hotspot: 'daryl-era-phone', item: 'alteredHandbook' },
+  { type: 'scene', scene: 'adult-john-payphone' },
+  { type: 'retrieve', item: 'touchToneCode' },
+  { type: 'use', hotspot: 'john-era-phone', item: 'touchToneCode' },
+  { type: 'scene', scene: 'adult-michael-conference' },
+  { type: 'retrieve', item: 'pagerTranslation' },
+  { type: 'retrieve', item: 'auditLog' },
+  { type: 'use', hotspot: 'future-conference-phone', item: 'pagerTranslation' },
+]);
+verifyAdultDebugStart('adult-07', 'adult-outro', [
+  { type: 'use', hotspot: 'handbook-console', item: 'filingNumber' },
+]);
+verifyAdultDebugStart('adult-outro', undefined, [
+  { type: 'takeAction', hotspot: 'revised-handbook' },
+]);
+
 console.log(`Adult Relocation solvability check passed: ${campaign.chapterOrder.length - 1} chapters plus epilogue.`);

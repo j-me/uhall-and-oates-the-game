@@ -9,13 +9,16 @@
   "scripts": {
     "build": "node scripts/build-project.mjs",
     "download:music": "bash scripts/download-local-music.sh",
+    "download:music:final": "bash scripts/download-local-music.sh settings.local.json final-",
     "generate:sfx": "node scripts/generate-sfx.mjs",
     "generate:music": "node scripts/generate-repo-music.mjs",
     "serve": "python3 -m http.server 8000",
     "check": "node scripts/check-project.mjs",
     "verify:campaign": "node scripts/verify-campaign.mjs",
     "verify:sequel": "node scripts/verify-adult-relocation.mjs",
+    "verify:finale": "node scripts/verify-finale.mjs",
     "verify:continuity": "node scripts/check-continuity.mjs",
+    "verify:saves": "node scripts/verify-save-progress.mjs",
     "settings:url": "node scripts/create-settings-url.mjs settings.local.json",
     "settings:url:base64": "node scripts/create-settings-url.mjs settings.local.json https://j-me.github.io/uhall-and-oates-the-game/ base64"
   }

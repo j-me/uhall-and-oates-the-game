@@ -73,6 +73,7 @@ export function createSettings({ root, onChange, onDebugChapter }) {
   const form = panel.querySelector('#settings-form');
   const externalFields = panel.querySelector('#external-music-fields');
   const debugSelect = panel.querySelector('#debug-chapter-select');
+  const debugStorageReset = panel.querySelector('#debug-storage-reset');
   const jsonValue = panel.querySelector('#settings-json-value');
   const jsonStatus = panel.querySelector('#settings-json-status');
   const standardView = panel.querySelector('#settings-standard-view');
@@ -97,6 +98,7 @@ export function createSettings({ root, onChange, onDebugChapter }) {
     const usingExternal = values.musicMode === 'external';
     externalFields.hidden = !usingExternal;
     debugSelect.classList.toggle('is-hidden', !values.debugEnabled);
+    debugStorageReset.classList.toggle('is-hidden', !values.debugEnabled);
     standardView.classList.toggle('is-hidden', activeView !== 'standard');
     advancedView.classList.toggle('is-hidden', activeView !== 'advanced');
     viewButtons.forEach((button) => {
@@ -177,6 +179,33 @@ export function createSettings({ root, onChange, onDebugChapter }) {
       close();
       onDebugChapter(button.dataset.debugChapter);
     });
+  });
+  const resetStorage = panel.querySelector('#reset-local-storage');
+  const resetStorageStatus = panel.querySelector('#reset-local-storage-status');
+  let resetDisarmTimer;
+  resetStorage.addEventListener('click', () => {
+    if (resetStorage.dataset.armed !== 'true') {
+      resetStorage.dataset.armed = 'true';
+      resetStorage.textContent = 'CONFIRM — DELETE EVERYTHING';
+      resetStorageStatus.textContent = 'Click again within 6 seconds to erase all local game data.';
+      window.clearTimeout(resetDisarmTimer);
+      resetDisarmTimer = window.setTimeout(() => {
+        resetStorage.dataset.armed = 'false';
+        resetStorage.textContent = 'DELETE LOCAL DATA';
+        resetStorageStatus.textContent = '';
+      }, 6000);
+      return;
+    }
+    window.clearTimeout(resetDisarmTimer);
+    try {
+      localStorage.clear();
+      resetStorageStatus.textContent = 'Local data deleted. Restarting…';
+      window.location.reload();
+    } catch {
+      resetStorage.dataset.armed = 'false';
+      resetStorage.textContent = 'DELETE LOCAL DATA';
+      resetStorageStatus.textContent = 'The browser blocked local-storage deletion.';
+    }
   });
 
   render();

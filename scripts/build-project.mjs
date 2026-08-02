@@ -131,7 +131,15 @@ const minifiedCss = esbuild.transformSync(sourceCss, {
   minify: true,
   legalComments: 'none',
 });
-writeFileSync(join(assetsDirectory, 'app.min.css'), rewriteImageReferences(minifiedCss.code));
+const bundledCssPath = join(assetsDirectory, 'app.min.css');
+writeFileSync(bundledCssPath, rewriteImageReferences(minifiedCss.code));
+const bundledCss = readFileSync(bundledCssPath, 'utf8');
+const missingCssAssets = [...bundledCss.matchAll(/url\((?:"|')?(\.\/[^"')]+)(?:"|')?\)/g)]
+  .map((match) => match[1])
+  .filter((reference) => !existsSync(resolve(assetsDirectory, reference)));
+if (missingCssAssets.length) {
+  throw new Error(`Bundled CSS references missing assets:\n${[...new Set(missingCssAssets)].join('\n')}`);
+}
 
 const sourceHtml = readFileSync(join(projectRoot, 'index.html'), 'utf8');
 const bundledHtml = rewriteImageReferences(sourceHtml

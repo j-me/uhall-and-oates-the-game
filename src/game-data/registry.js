@@ -1,9 +1,11 @@
 import { originalCampaign } from './campaigns/original/original-campaign.js';
 import { adultRelocationCampaign } from './campaigns/adult-relocation/adult-campaign.js';
+import { finaleCampaign } from './campaigns/finale/final-campaign.js';
 
 export const campaigns = {
   [originalCampaign.id]: originalCampaign,
   [adultRelocationCampaign.id]: adultRelocationCampaign,
+  [finaleCampaign.id]: finaleCampaign,
 };
 
 // Compatibility export for the original campaign while the sequel engine is

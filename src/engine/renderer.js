@@ -101,6 +101,40 @@ export function createRenderer(root, { onHotspot }) {
     window.setTimeout(() => marker.remove(), 850);
   }
 
+  function animatePickup(hotspot, item, delay = 0) {
+    const inventory = root.querySelector('#inventory');
+    if (!inventory || !item?.icon) {
+      animateInteraction(hotspot, 'pickup');
+      return;
+    }
+
+    const rootRect = root.getBoundingClientRect();
+    const layerRect = layer.getBoundingClientRect();
+    const destination = inventory.querySelector(`[data-item-id="${CSS.escape(item.id)}"]`) || inventory;
+    const inventoryRect = destination.getBoundingClientRect();
+    const sourceX = layerRect.left - rootRect.left
+      + layerRect.width * (hotspot.bounds.left + hotspot.bounds.width / 2) / 100;
+    const sourceY = layerRect.top - rootRect.top
+      + layerRect.height * (hotspot.bounds.top + hotspot.bounds.height / 2) / 100;
+    const targetX = inventoryRect.left - rootRect.left + inventoryRect.width / 2;
+    const targetY = inventoryRect.top - rootRect.top + inventoryRect.height / 2;
+
+    const flight = document.createElement('div');
+    flight.className = 'pickup-flight';
+    flight.setAttribute('aria-hidden', 'true');
+    flight.style.left = `${sourceX}px`;
+    flight.style.top = `${sourceY}px`;
+    flight.style.setProperty('--pickup-x', `${targetX - sourceX}px`);
+    flight.style.setProperty('--pickup-y', `${targetY - sourceY}px`);
+    flight.style.animationDelay = `${delay}ms`;
+
+    const icon = document.createElement('span');
+    icon.className = `inventory-icon inventory-icon--${item.icon}`;
+    flight.append(icon);
+    root.append(flight);
+    window.setTimeout(() => flight.remove(), 950 + delay);
+  }
+
   function reactJohn(expression = 'startled', duration = 1050) {
     const john = art.querySelector('[data-character="john-oates"]');
     const reactionSrc = getCharacterSprite('john-oates', expression);
@@ -136,5 +170,5 @@ export function createRenderer(root, { onHotspot }) {
     }, duration));
   }
 
-  return { render, setVerb, removeHotspot, animateInteraction, reactJohn, reactCharacter };
+  return { render, setVerb, removeHotspot, animateInteraction, animatePickup, reactJohn, reactCharacter };
 }

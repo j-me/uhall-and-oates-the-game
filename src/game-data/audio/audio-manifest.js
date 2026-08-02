@@ -15,6 +15,13 @@ export const MUSIC_SLOTS = Object.freeze([
   'adult-06',
   'adult-07',
   'adult-outro',
+  'final-01',
+  'final-02',
+  'final-03',
+  'final-04',
+  'final-05',
+  'final-06',
+  'final-outro',
 ]);
 
 export const SFX_PATHS = Object.freeze({

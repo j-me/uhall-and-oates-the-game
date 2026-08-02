@@ -12,6 +12,7 @@ export const originalCampaign = {
   id: 'original',
   title: 'Uhall & Oates — The Game',
   shortTitle: 'The Original Game',
+  completionFlag: 'originalGameComplete',
   startChapter: 'chapter-01',
   startScene: 'old-orchard-pier',
   chapterOrder: chapterList.map((chapter) => chapter.id),

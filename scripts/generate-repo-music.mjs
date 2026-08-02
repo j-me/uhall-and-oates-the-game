@@ -27,6 +27,13 @@ const cues = {
   'adult-06-original': { bpm: 128, bass: [43, 50, 46, 48, 43, 50, 53, 48], lead: [70, 74, 77, 0, 82, 77, 74, 70] },
   'adult-07-original': { bpm: 124, bass: [40, 47, 43, 45, 38, 45, 47, 50], lead: [67, 71, 74, 79, 76, 74, 71, 67] },
   'adult-outro-original': { bpm: 98, bass: [45, 52, 49, 47, 45, 52, 54, 49], lead: [69, 73, 76, 81, 78, 76, 73, 69] },
+  'final-01-original': { bpm: 104, bass: [45, 52, 49, 47, 42, 49, 52, 47], lead: [69, 73, 76, 74, 71, 69, 66, 0] },
+  'final-02-original': { bpm: 112, bass: [40, 47, 43, 50, 40, 47, 45, 50], lead: [67, 71, 74, 76, 74, 71, 69, 0] },
+  'final-03-original': { bpm: 118, bass: [43, 50, 47, 52, 43, 50, 54, 52], lead: [70, 74, 77, 81, 77, 74, 72, 0] },
+  'final-04-original': { bpm: 124, bass: [38, 45, 41, 48, 38, 45, 43, 50], lead: [65, 68, 72, 75, 72, 68, 65, 0] },
+  'final-05-original': { bpm: 128, bass: [45, 52, 49, 54, 45, 52, 57, 54], lead: [69, 73, 76, 81, 78, 76, 73, 69] },
+  'final-06-original': { bpm: 126, bass: [47, 54, 50, 52, 47, 54, 57, 59], lead: [74, 78, 81, 83, 81, 78, 76, 74] },
+  'final-outro-original': { bpm: 92, bass: [45, 52, 49, 47, 42, 49, 45, 40], lead: [69, 73, 76, 81, 76, 73, 69, 64] },
 };
 
 const cueSlots = Object.keys(cues).map((name) => name.replace(/-original$/, ''));
