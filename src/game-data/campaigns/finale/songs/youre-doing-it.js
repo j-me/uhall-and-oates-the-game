@@ -1,6 +1,5 @@
 export const youreDoingItSong = {
-  audio: 'assets/audio/music-local/Youre_Doing_It.mp3',
-  fallbackAudio: 'assets/audio/music/final-outro-original.mp3',
+  audio: 'assets/audio/music/youre-doing-it.mp3',
   duration: 239.592,
   lyrics: [
     { start: 10.5, section: 'VERSE 1', lines: ['I carried every box up every stair', 'You found the microphone and fixed your hair', 'I said, “Pick up the rhythm, lend a hand”', 'You turned the loading dock into a one-man band'] },

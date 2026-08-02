@@ -59,7 +59,8 @@ Optional files in `assets/audio/music-local/` use neutral slot-based names:
 - `adult-outro.mp3`
 - `final-01.mp3` through `final-06.mp3`
 - `final-outro.mp3`
-- `Youre_Doing_It.mp3` — the optional full-length song used by the final performance and synchronized lyric crawl
+
+The finale performance always uses the project-owned recording at `assets/audio/music/youre-doing-it.mp3`. It ships with the game and is not replaced by the **External** or **Original** soundtrack setting.
 
 Settings are saved in the browser for future sessions. URL fields are optional and can point to any browser-playable audio resource whose host permits cross-origin playback.
 The Settings panel can also copy the complete configuration as JSON or apply a pasted JSON block, making it easy to move every music URL and toggle to another browser at once.

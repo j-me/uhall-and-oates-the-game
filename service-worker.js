@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uhall-oates-v42';
+const CACHE_NAME = 'uhall-oates-v43';
 const APP_SHELL = [
   './',
   './index.html',
@@ -184,6 +184,7 @@ const APP_SHELL = [
   './assets/audio/music/final-05-original.mp3',
   './assets/audio/music/final-06-original.mp3',
   './assets/audio/music/final-outro-original.mp3',
+  './assets/audio/music/youre-doing-it.mp3',
   './assets/audio/sfx/pickup.wav',
   './assets/audio/sfx/success-chime.wav',
   './assets/audio/sfx/crane-motor.wav',
@@ -224,9 +225,15 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
       return fetch(event.request).then((response) => {
-        if (response.ok) {
+        // Range requests for audio return 206 responses, which the Cache API
+        // cannot store. Cache only complete responses and await the write so a
+        // rejected cache operation never becomes an unhandled promise.
+        if (response.status === 200) {
           const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          return caches.open(CACHE_NAME)
+            .then((cache) => cache.put(event.request, copy))
+            .catch(() => undefined)
+            .then(() => response);
         }
         return response;
       }).catch(() => {
