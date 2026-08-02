@@ -27,7 +27,7 @@ export const finalChicagoStudio = {
       { label: 'MICHAEL', options: ['Transfer harmony', 'Server rack', 'Office ambience'], answer: 'Transfer harmony' },
     ], 'The transfer recognizes three musicians instead of two assets and a keyboard-shaped witness.', 'final-studio-console'), removeItems: ['studioPatchCable'], give: [item('fullRehearsalMix', 'full rehearsal mix', 'final-full-mix')], setFlags: ['fullMixRecovered'], clearSelection: true, success: true, effect: 'broadcast', complete: 'The restored mix ends with Joe ordering a Los Angeles contractor to convert the comeback into a commercial.', next: next('final-04', 'final-commercial-studio'), message: 'The full rehearsal plays. John’s arrangement is no longer metadata; it is part of the music.' },
     } },
-    { id: 'michael-final-studio', label: 'Michael McDonald', bounds: { left: 82, top: 39, width: 17, height: 20 }, responses: { look: 'Michael can hear a mislabeled channel at forty paces.', talk: 'MICHAEL: Someone classified me as ambience again.\nJOHN: You are unusually billable ambience.' } },
+    { id: 'michael-final-studio', label: 'Michael McDonald', bounds: { left: 86, top: 49, width: 12, height: 43 }, responses: { look: 'Michael can hear a mislabeled channel at forty paces.', talk: 'MICHAEL: Someone classified me as ambience again.\nJOHN: You are unusually billable ambience.' } },
     { id: 'dolly-percussion', label: 'accidental dolly percussion section', bounds: { left: 67, top: 46, width: 11, height: 31 }, responses: { look: 'Three blanket-loaded dollies tuned to C, E, and workers’ compensation.', use: 'John rolls them together. The resulting chord is better than Joe’s jingle.' } },
   ],
 };

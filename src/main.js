@@ -2,7 +2,9 @@ import { createGame } from './engine/game.js';
 import { createAssetPreloader } from './engine/preloader.js';
 import { campaigns, chapters } from './game-data/registry.js';
 import { createSettings } from './ui/settings.js';
+import { createStorybook } from './ui/storybook.js';
 import { musicSources } from './game-data/audio/audio-manifest.js';
+import { campaignStories } from './game-data/stories.js';
 
 const gameRoot = document.getElementById('game');
 const titleScreen = document.getElementById('title-screen');
@@ -31,6 +33,12 @@ const game = createGame({
     preloader.preloadChapter(chapterId);
     preloader.preloadNext(chapterId);
   },
+});
+createStorybook({
+  root: gameRoot,
+  stories: campaignStories,
+  onMediaStart: stopTitleMusic,
+  onMediaStop: startTitleMusic,
 });
 titleMusic.volume = 0.34;
 

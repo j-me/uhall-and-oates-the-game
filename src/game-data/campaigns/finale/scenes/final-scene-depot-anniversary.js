@@ -30,6 +30,6 @@ export const finalDepotAnniversary = {
         { label: 'OUTPUT', options: ['Warehouse P.A.', 'Clean monitor', 'Invoice printer'], answer: 'Clean monitor' },
       ], 'The reel plays an unfinished arrangement credited equally to John and Daryl.', 'final-reel-console'), removeItems: ['bentSpool'], give: [item('rehearsalReel', 'restored rehearsal reel', 'final-restored-reel')], setFlags: ['reelRestored'], clearSelection: true, success: true, effect: 'tape', complete: 'The reel names the One on One Listening Room in Manhattan. Daryl agrees to attend the next rehearsal as a participant, not an attraction.', next: next('final-02', 'final-listening-room'), message: 'The old recording survives. It sounds unfinished because both partners were supposed to finish it together.' },
     } },
-    { id: 'joe-final-depot', label: 'Joe Timmins', bounds: { left: 47, top: 37, width: 17, height: 21 }, responses: { look: 'Joe has trademarked the phrase “emotionally relocatable.”', talk: 'JOE: The comeback is a moving-company asset.\nJOHN: Then the company can carry the tune.' } },
+    { id: 'joe-final-depot', label: 'Joe Timmins', bounds: { left: 49, top: 56, width: 13, height: 36 }, responses: { look: 'Joe has trademarked the phrase “emotionally relocatable.”', talk: 'JOE: The comeback is a moving-company asset.\nJOHN: Then the company can carry the tune.' } },
   ],
 };

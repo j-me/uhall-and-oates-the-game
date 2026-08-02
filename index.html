@@ -86,7 +86,10 @@
       </div>
     </section>
     <section id="title-screen" class="title-screen" aria-label="Start Uhall and Oates the Game">
-      <button class="settings-badge" data-open-settings type="button" aria-label="Open game settings">SETTINGS</button>
+      <div class="title-utility-actions">
+        <button class="story-badge" data-open-story type="button" aria-label="Read the campaign stories">STORY</button>
+        <button class="settings-badge" data-open-settings type="button" aria-label="Open game settings">SETTINGS</button>
+      </div>
       <div class="title-truck">
         <img src="assets/art/ui/uhall-oates-truck-logo-v2.png" alt="Uhall and Oates: The Game" />
         <img class="anniversary-badge" src="assets/art/ui/20th-something-anniversary-badge-v1.png"
@@ -109,6 +112,32 @@
           <button id="continue-sequel" class="is-hidden" type="button">CONTINUE ADULT RELOCATION</button>
           <button id="continue-finale" class="is-hidden" type="button">CONTINUE THE SOUND OF MOVING ON</button>
         </div>
+      </div>
+    </section>
+    <section id="story-panel" class="story-panel is-hidden" role="dialog" aria-modal="true"
+      aria-labelledby="story-title">
+      <div class="storybook">
+        <header class="storybook-header">
+          <div>
+            <p>Uhall &amp; Oates Illustrated Archives</p>
+            <h2 id="story-title">THE STORY SO FAR</h2>
+          </div>
+          <button class="storybook-close" data-close-story type="button" aria-label="Close storybook">×</button>
+        </header>
+        <nav id="storybook-campaigns" class="storybook-campaigns" aria-label="Choose a campaign story"></nav>
+        <div id="storybook-page" class="storybook-page" aria-live="polite">
+          <figure><img id="storybook-image" src="" alt="" /></figure>
+          <article>
+            <p id="storybook-kicker" class="storybook-kicker"></p>
+            <h3 id="storybook-page-title"></h3>
+            <div id="storybook-copy" class="storybook-copy"></div>
+          </article>
+        </div>
+        <footer class="storybook-controls">
+          <button id="storybook-previous" type="button">‹ PREVIOUS PAGE</button>
+          <span id="storybook-progress" aria-live="polite"></span>
+          <button id="storybook-next" type="button">NEXT PAGE ›</button>
+        </footer>
       </div>
     </section>
     <section id="intro-screen" class="intro-screen is-hidden" aria-live="polite" aria-label="Game introduction">

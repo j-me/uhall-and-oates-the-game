@@ -1,5 +1,6 @@
 import { showPuzzle } from '../game-data/puzzles/registry.js';
 import { getCharacterSprite } from '../game-data/characters.js';
+import { showVideoOverlay } from './media.js';
 
 const verbs = [
   ['look', 'LOOK'], ['use', 'USE'], ['talk', 'TALK'], ['take', 'TAKE'],
@@ -431,34 +432,7 @@ export function createUI(root, callbacks) {
         readyTimer = window.setTimeout(markReady, reducedMotion ? 0 : readyAfter);
       }
     },
-    showVideo: (src, onClose) => {
-      root.querySelector('.video-overlay')?.remove();
-      const overlay = document.createElement('div');
-      overlay.className = 'video-overlay';
-      const title = document.createElement('strong');
-      title.textContent = 'UHALL & OATES PRESENTS';
-      const video = document.createElement('video');
-      video.src = src;
-      video.controls = true;
-      video.autoplay = true;
-      video.playsInline = true;
-      video.setAttribute('aria-label', 'Uhall and Oates ending video');
-      const close = document.createElement('button');
-      close.type = 'button';
-      close.textContent = 'RETURN TO THE GAME';
-      let closed = false;
-      const finish = () => {
-        if (closed) return;
-        closed = true;
-        video.pause();
-        overlay.remove();
-        onClose?.();
-      };
-      close.addEventListener('click', finish);
-      overlay.append(title, video, close);
-      sceneRoot.append(overlay);
-      video.play().catch(() => { /* Controls remain available when autoplay is blocked. */ });
-    },
+    showVideo: (src, onClose) => showVideoOverlay(root, src, onClose),
     showPuzzle: (id, options) => showPuzzle(id, root, options),
     render,
   };

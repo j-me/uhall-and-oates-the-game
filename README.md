@@ -12,7 +12,7 @@ Open `index.html` in a modern browser, or serve the folder:
 python3 -m http.server 8000
 ```
 
-Then visit `http://localhost:8000`. Click **Start the Rescue**, then use **LOOK**, **USE**, **TALK**, and **TAKE** with scene objects and inventory. Important clues are repeated in dialogue, object descriptions, and visible scene changes. Use **Settings** from the title screen or top bar to control sound, select the soundtrack source, and reveal the debug chapter selector.
+Then visit `http://localhost:8000`. Click **Start the Rescue**, then use **LOOK**, **USE**, **TALK**, and **TAKE** with scene objects and inventory. Important clues are repeated in dialogue, object descriptions, and visible scene changes. Use **Story** on the title screen to read the three illustrated campaign histories with page-turn, keyboard, or swipe controls. Use **Settings** from the title screen or top bar to control sound, select the soundtrack source, and reveal the debug chapter selector.
 
 ## Production build
 
@@ -123,6 +123,7 @@ Each chapter has a small, ordered inventory chain. Items are consumed once their
 - `src/game-data/puzzles/finale/` — the touch- and keyboard-friendly four-lane rhythm rehearsal.
 - `src/game-data/items/` — inventory inspection copy shared by the engine.
 - `src/game-data/debug/` — campaign test loadouts.
+- `src/game-data/stories.js` and `src/ui/storybook.js` — illustrated campaign summaries and page-turning reader.
 - `src/engine/` — renderer, game state, interactions, scene loading, and save support.
 - `src/ui/` — shared inventory, verb bar, dialogue, completion, and video presentation.
 - `assets/art/campaigns/original/` — original-campaign chapter backgrounds, reveal cards, and props.
