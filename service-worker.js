@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uhall-oates-v50';
+const CACHE_NAME = 'uhall-oates-v52';
 const APP_SHELL = [
   './',
   './index.html',
@@ -100,6 +100,10 @@ const APP_SHELL = [
   './assets/art/ui/20th-something-anniversary-badge-v1.png',
   './assets/art/ui/character-headshot-tile-v1.png',
   './assets/art/ui/inventory-sprites-v1.png',
+  './assets/art/ui/cursors/look-eyes-v1.png',
+  './assets/art/ui/cursors/use-point-v1.png',
+  './assets/art/ui/cursors/talk-mouth-v1.png',
+  './assets/art/ui/cursors/take-grab-v1.png',
   './assets/art/campaigns/original/reveals/hall-oates-crawl-reveal-v1.png',
   './assets/art/campaigns/original/reveals/chapter-01-old-orchard-v1.png',
   './assets/art/campaigns/original/reveals/chapter-02-manhattan-v1.png',

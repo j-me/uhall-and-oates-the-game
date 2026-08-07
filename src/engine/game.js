@@ -190,7 +190,7 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
     if (state.selectedVerb === 'look' && !state.selectedItem) {
       state.selectedVerb = null;
       state.selectedItem = itemId;
-      renderer.setVerb('use');
+      renderer.setVerb('use', 'inventory');
       ui.render(state);
       ui.message(itemDescriptions[itemId] || `It is ${item.label}. You should probably keep it.`);
       ui.clearSpeech();
@@ -199,7 +199,7 @@ export function createGame({ root, campaigns, chapters, defaultCampaignId = 'ori
     }
     state.selectedItem = state.selectedItem === itemId ? null : itemId;
     state.selectedVerb = null;
-    renderer.setVerb(state.selectedItem ? 'use' : 'look');
+    renderer.setVerb(state.selectedItem ? 'use' : 'look', state.selectedItem ? 'inventory' : 'look');
     ui.render(state);
     ui.clearSpeech();
     audio.click();

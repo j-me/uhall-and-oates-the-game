@@ -7,6 +7,7 @@ import {
 
 export function createRenderer(root, { onHotspot }) {
   const art = root.querySelector('#scene-art');
+  const sceneRoot = art.closest('.scene');
   const layer = root.querySelector('#hotspots');
   const caption = root.querySelector('#scene-caption');
   let buttons = [];
@@ -19,6 +20,7 @@ export function createRenderer(root, { onHotspot }) {
   });
 
   function render(scene, state, verb) {
+    sceneRoot.dataset.cursorAction = state.selectedItem ? 'inventory' : (verb || 'look');
     art.className = `scene-art ${scene.artClass || ''}`;
     art.replaceChildren();
     const stateBackground = scene.backgroundStates?.find((entry) => entry.when.every((flag) => state.flags[flag]));
@@ -77,7 +79,8 @@ export function createRenderer(root, { onHotspot }) {
     });
   }
 
-  function setVerb(verb = 'look') {
+  function setVerb(verb = 'look', cursorAction = verb) {
+    sceneRoot.dataset.cursorAction = cursorAction || 'look';
     buttons.forEach((button) => button.setAttribute('aria-label', `${verb} ${button.dataset.id.replaceAll('-', ' ')}`));
   }
 

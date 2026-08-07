@@ -679,3 +679,11 @@ input,textarea,select { font-size:16px; }
   .storybook-media-action span { width:27px; }
   .storybook-media-action b { font-size:.52rem; }
 }
+
+/* SCUMM-style verb cursors: scoped to the stage so normal UI controls stay familiar. */
+@media (hover:hover) and (pointer:fine) {
+  .scene[data-cursor-action="look"],.scene[data-cursor-action="look"] .hotspot { cursor:url('../../assets/art/ui/cursors/look-eyes-v1.png') 32 30,help; }
+  .scene[data-cursor-action="use"],.scene[data-cursor-action="use"] .hotspot { cursor:url('../../assets/art/ui/cursors/use-point-v1.png') 8 6,pointer; }
+  .scene[data-cursor-action="talk"],.scene[data-cursor-action="talk"] .hotspot { cursor:url('../../assets/art/ui/cursors/talk-mouth-v1.png') 32 32,pointer; }
+  .scene[data-cursor-action="take"],.scene[data-cursor-action="take"] .hotspot { cursor:url('../../assets/art/ui/cursors/take-grab-v1.png') 32 25,grab; }
+}
